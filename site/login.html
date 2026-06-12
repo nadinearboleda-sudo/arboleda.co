@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log in — Client portal | arboleda.co</title>
+<meta name="description" content="Log in to your arboleda.co client portal.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='3' y='10' width='4' height='11' rx='2' fill='%230C4A33'/><rect x='10' y='3' width='4' height='18' rx='2' fill='%230C4A33'/><rect x='17' y='7' width='4' height='14' rx='2' fill='%230C4A33'/></svg>">
+<meta name="theme-color" content="#0C4A33">
+<script src="site.js" defer></script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container">
+    <a class="wordmark" href="index.html" aria-label="arboleda.co home">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="10" width="4" height="11" rx="2" fill="#0C4A33"></rect><rect x="10" y="3" width="4" height="18" rx="2" fill="#0C4A33"></rect><rect x="17" y="7" width="4" height="14" rx="2" fill="#0C4A33"></rect></svg>
+      arboleda<span class="tld">.co</span>
+    </a>
+    <div class="nav-actions">
+      <a class="btn btn-gray" href="index.html">← Back to site</a>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="auth-main">
+  <div class="auth-card">
+    <h1>Welcome back.</h1>
+    <p class="sub">Log in to see your engagement — scope, progress and deliverables in one place.</p>
+    <form id="login-form" novalidate>
+      <div class="field">
+        <label for="email">Work email</label>
+        <input type="email" id="email" name="email" autocomplete="email" required placeholder="you@company.com.au">
+        <p class="error">Enter a valid work email address.</p>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" autocomplete="current-password" required placeholder="••••••••">
+        <p class="error">Enter your password.</p>
+        <span class="hint"><a href="#" style="color:var(--accent-deep);font-weight:600">Forgot password?</a></span>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary btn-lg" type="submit" style="width:100%">Log in <span class="arrow" aria-hidden="true">→</span></button>
+      </div>
+    </form>
+    <p class="form-foot">New here? <a href="start.html">Start with the Ops Audit</a></p>
+  </div>
+</main>
+
+<script>
+  document.getElementById('login-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var ok = true;
+    ['email', 'password'].forEach(function (id) {
+      var f = document.getElementById(id);
+      var bad = !f.value || (f.type === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.value));
+      f.closest('.field').classList.toggle('invalid', bad);
+      f.setAttribute('aria-invalid', bad ? 'true' : 'false');
+      if (bad) ok = false;
+    });
+    if (ok) window.location.href = 'portal.html';
+  });
+</script>
+
+</body>
+</html>

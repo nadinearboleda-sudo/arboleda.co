@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start with the Ops Audit — Client portal | arboleda.co</title>
+<meta name="description" content="Create your arboleda.co portal account and answer a short intake. We'll scope your fixed-price Ops Automation Audit within 48 hours.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='3' y='10' width='4' height='11' rx='2' fill='%230C4A33'/><rect x='10' y='3' width='4' height='18' rx='2' fill='%230C4A33'/><rect x='17' y='7' width='4' height='14' rx='2' fill='%230C4A33'/></svg>">
+<meta name="theme-color" content="#0C4A33">
+<script src="site.js" defer></script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container">
+    <a class="wordmark" href="index.html" aria-label="arboleda.co home">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="10" width="4" height="11" rx="2" fill="#0C4A33"></rect><rect x="10" y="3" width="4" height="18" rx="2" fill="#0C4A33"></rect><rect x="17" y="7" width="4" height="14" rx="2" fill="#0C4A33"></rect></svg>
+      arboleda<span class="tld">.co</span>
+    </a>
+    <div class="nav-actions">
+      <a class="btn btn-gray" href="index.html">← Back to site</a>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="auth-main">
+  <div class="auth-card" style="max-width:520px">
+
+    <div class="progress-steps" id="progress" aria-hidden="true">
+      <span class="on"></span><span></span><span></span>
+    </div>
+
+    <!-- Step 1: account -->
+    <section class="portal-step" id="step-1">
+      <p class="step-label">Step 1 of 3</p>
+      <h1 id="intake-h1">Start with the Ops Audit.</h1>
+      <p class="sub" id="intake-sub">Three short steps. We&rsquo;ll scope your audit within 48 hours — fixed price, 2–3 weeks, no obligation beyond it.</p>
+      <div class="field">
+        <label for="name">Full name</label>
+        <input type="text" id="name" name="name" autocomplete="name" required placeholder="Alex Nguyen">
+        <p class="error">Please enter your name.</p>
+      </div>
+      <div class="field">
+        <label for="email">Work email</label>
+        <input type="email" id="email" name="email" autocomplete="email" required placeholder="you@company.com.au">
+        <p class="error">Enter a valid work email address.</p>
+      </div>
+      <div class="field">
+        <label for="password">Create a password</label>
+        <input type="password" id="password" name="password" autocomplete="new-password" required minlength="8" placeholder="At least 8 characters">
+        <p class="error">Password needs at least 8 characters.</p>
+      </div>
+      <div class="form-actions">
+        <span class="hint" style="font-size:13px;color:var(--muted)">Already have an account? <a href="login.html" style="color:var(--accent-deep);font-weight:600">Log in</a></span>
+        <button class="btn btn-primary" type="button" data-next="2">Continue <span class="arrow" aria-hidden="true">→</span></button>
+      </div>
+    </section>
+
+    <!-- Step 2: company -->
+    <section class="portal-step" id="step-2" hidden>
+      <p class="step-label">Step 2 of 3</p>
+      <h1>About your company.</h1>
+      <p class="sub">Just enough to scope the audit — nothing you&rsquo;ll need to dig for.</p>
+      <div class="field">
+        <label for="company">Company name</label>
+        <input type="text" id="company" name="company" autocomplete="organization" required placeholder="Acme Pty Ltd">
+        <p class="error">Please enter your company name.</p>
+      </div>
+      <div class="field">
+        <label for="headcount">Headcount</label>
+        <select id="headcount" name="headcount" required>
+          <option value="">Select…</option>
+          <option>Under 50</option>
+          <option>50–150</option>
+          <option>150–300</option>
+          <option>300–500</option>
+          <option>500+</option>
+        </select>
+        <p class="error">Select your headcount range.</p>
+      </div>
+      <div class="field">
+        <label for="role">Your role</label>
+        <select id="role" name="role" required>
+          <option value="">Select…</option>
+          <option>Founder / CEO</option>
+          <option>CFO / Finance lead</option>
+          <option>COO / Ops lead</option>
+          <option>Chief of Staff</option>
+          <option>Other</option>
+        </select>
+        <p class="error">Select your role.</p>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-line" type="button" data-back="1">← Back</button>
+        <button class="btn btn-primary" type="button" data-next="3">Continue <span class="arrow" aria-hidden="true">→</span></button>
+      </div>
+    </section>
+
+    <!-- Step 3: systems -->
+    <section class="portal-step" id="step-3" hidden>
+      <p class="step-label">Step 3 of 3</p>
+      <h1>Your systems.</h1>
+      <p class="sub">Tick what you run today — it tells us where the automation potential lives.</p>
+      <div class="field">
+        <label>Systems in your stack</label>
+        <div class="checks" id="systems">
+          <label><input type="checkbox" value="Xero">Xero</label>
+          <label><input type="checkbox" value="HubSpot">HubSpot</label>
+          <label><input type="checkbox" value="Employment Hero">Employment Hero</label>
+          <label><input type="checkbox" value="PSA">A PSA tool</label>
+          <label><input type="checkbox" value="Other ERP">Other ERP</label>
+          <label><input type="checkbox" value="Spreadsheets">Mostly spreadsheets</label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="pain">What&rsquo;s eating the most time right now? <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+        <textarea id="pain" name="pain" rows="3" placeholder="e.g. month-end close takes 8 days; weekly reporting is manual…"></textarea>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-line" type="button" data-back="2">← Back</button>
+        <button class="btn btn-primary" type="button" id="submit-intake">Submit intake <span class="arrow" aria-hidden="true">→</span></button>
+      </div>
+    </section>
+
+    <!-- Step 4: done -->
+    <section class="portal-step" id="step-4" hidden>
+      <div class="success-icon" aria-hidden="true">✓</div>
+      <h1>You&rsquo;re in.</h1>
+      <p class="sub">Thanks — your intake is with us. We&rsquo;ll scope your engagement and send a fixed-price proposal to your email within 48 hours. Meanwhile, your portal already shows what&rsquo;s possible with the systems you run — and what each step unlocks.</p>
+      <div class="form-actions" style="justify-content:flex-start">
+        <a class="btn btn-primary" href="portal.html">Go to your portal <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn-line" href="index.html">Back to arboleda.co</a>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  var KEY = 'arboleda-intake-step';
+  var DATA_KEY = 'arboleda-intake';
+  var steps = [1, 2, 3, 4];
+
+  // Intent-aware entry (from service-page CTAs)
+  var intents = {
+    audit: { h1: 'Start with the Ops Audit.', sub: 'Three short steps. We\u2019ll scope your audit within 48 hours \u2014 fixed price, 2\u20133 weeks, no obligation beyond it.' },
+    readiness: { h1: 'Start with the AI Readiness Assessment.', sub: 'Three short steps. We\u2019ll scope your assessment within 48 hours \u2014 fixed price, 2 weeks, no obligation beyond it.' },
+    systems: { h1: 'Start with a systems review.', sub: 'Three short steps. We\u2019ll scope your review within 48 hours \u2014 fixed price, fixed timeline, no obligation beyond it.' }
+  };
+  var intent = new URLSearchParams(window.location.search).get('intent');
+  if (!intents[intent]) intent = 'audit';
+  document.getElementById('intake-h1').textContent = intents[intent].h1;
+  document.getElementById('intake-sub').textContent = intents[intent].sub;
+
+  function saveData() {
+    var systems = [];
+    document.querySelectorAll('#systems input:checked').forEach(function (c) { systems.push(c.value); });
+    var data = {
+      intent: intent,
+      name: (document.getElementById('name').value || '').trim(),
+      email: (document.getElementById('email').value || '').trim(),
+      company: (document.getElementById('company').value || '').trim(),
+      headcount: document.getElementById('headcount').value,
+      role: document.getElementById('role').value,
+      systems: systems,
+      pain: (document.getElementById('pain').value || '').trim()
+    };
+    try { localStorage.setItem(DATA_KEY, JSON.stringify(data)); } catch (e) {}
+  }
+
+  function show(n) {
+    steps.forEach(function (s) {
+      document.getElementById('step-' + s).hidden = (s !== n);
+    });
+    var dots = document.querySelectorAll('#progress span');
+    dots.forEach(function (d, i) { d.className = (i < Math.min(n, 3)) ? 'on' : ''; });
+    document.getElementById('progress').style.display = (n === 4) ? 'none' : 'flex';
+    try { localStorage.setItem(KEY, String(n)); } catch (e) {}
+  }
+
+  function validateStep(n) {
+    var fields = document.querySelectorAll('#step-' + n + ' input[required], #step-' + n + ' select[required]');
+    var ok = true;
+    fields.forEach(function (f) {
+      var bad = !f.value ||
+        (f.type === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.value)) ||
+        (f.type === 'password' && f.value.length < 8);
+      var wrap = f.closest('.field');
+      if (wrap) wrap.classList.toggle('invalid', bad);
+      f.setAttribute('aria-invalid', bad ? 'true' : 'false');
+      if (bad && ok) f.focus();
+      if (bad) ok = false;
+    });
+    return ok;
+  }
+
+  document.querySelectorAll('[data-next]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var current = parseInt(btn.closest('.portal-step').id.replace('step-', ''), 10);
+      if (validateStep(current)) { saveData(); show(parseInt(btn.getAttribute('data-next'), 10)); }
+    });
+  });
+  document.querySelectorAll('[data-back]').forEach(function (btn) {
+    btn.addEventListener('click', function () { show(parseInt(btn.getAttribute('data-back'), 10)); });
+  });
+  document.getElementById('submit-intake').addEventListener('click', function () { saveData(); show(4); });
+
+  var saved = 1;
+  try { saved = parseInt(localStorage.getItem(KEY) || '1', 10) || 1; } catch (e) {}
+  if (saved === 4) saved = 1; // completed flows restart fresh
+
+  // Restore previously entered values so a refresh never loses work
+  try {
+    var prev = JSON.parse(localStorage.getItem(DATA_KEY) || 'null');
+    if (prev) {
+      ['name', 'email', 'company'].forEach(function (id) { if (prev[id]) document.getElementById(id).value = prev[id]; });
+      if (prev.headcount) document.getElementById('headcount').value = prev.headcount;
+      if (prev.role) document.getElementById('role').value = prev.role;
+      if (prev.pain) document.getElementById('pain').value = prev.pain;
+      (prev.systems || []).forEach(function (s) {
+        var box = document.querySelector('#systems input[value="' + s + '"]');
+        if (box) box.checked = true;
+      });
+    }
+  } catch (e) {}
+
+  show(saved);
+})();
+</script>
+
+</body>
+</html>
