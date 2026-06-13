@@ -9,10 +9,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=20260613">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='3' y='10' width='4' height='11' rx='2' fill='%230C4A33'/><rect x='10' y='3' width='4' height='18' rx='2' fill='%230C4A33'/><rect x='17' y='7' width='4' height='14' rx='2' fill='%230C4A33'/></svg>">
 <meta name="theme-color" content="#0C4A33">
-<script src="site.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js?v=20260613b"></script>
+<script src="store.js?v=20260613b"></script>
+<script src="site.js?v=20260613" defer></script>
+<script src="report-content.js?v=20260613"></script>
+<script src="report-render.js?v=20260613"></script>
 </head>
 <body>
 
@@ -21,7 +26,7 @@
 <div class="portal-layout">
 
 <aside class="sidebar" aria-label="Portal navigation">
-  <a class="wordmark" href="index.html" aria-label="arboleda.co home">
+  <a class="wordmark" href="/" aria-label="arboleda.co home">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="10" width="4" height="11" rx="2" fill="#0C4A33"></rect><rect x="10" y="3" width="4" height="18" rx="2" fill="#0C4A33"></rect><rect x="17" y="7" width="4" height="14" rx="2" fill="#0C4A33"></rect></svg>
     arboleda<span class="tld">.co</span>
   </a>
@@ -34,16 +39,20 @@
       <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M8.5 2v3M8.5 12v3M2 8.5h3M12 8.5h3"></path><circle cx="8.5" cy="8.5" r="2.4"></circle></svg>
       What&rsquo;s possible
     </a>
+    <a class="side-link" href="#discovery-heading" data-side>
+      <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 8.5h11M8.5 3l5.5 5.5L8.5 14"></path></svg>
+      Co-build your audit
+    </a>
     <a class="side-link" href="#roadmap-heading" data-side>
       <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 13.5 8.5 3l5.5 10.5"></path><path d="M5.2 9.5h6.6"></path></svg>
-      Roadmap
+      Journey
     </a>
-    <a class="side-link" href="start.html">
+    <a class="side-link" href="/start">
       <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M11.5 2.5 14.5 5.5 6 14H3v-3z"></path></svg>
       Edit intake
     </a>
     <p class="side-label">Unlocks later</p>
-    <span class="side-link locked" aria-disabled="true">
+    <span class="side-link locked" aria-disabled="true" id="side-deliverables">
       <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="7" width="11" height="7.5" rx="1.5"></rect><path d="M5.5 7V5a3 3 0 0 1 6 0v2"></path></svg>
       Deliverables
       <span class="side-chip">Locked</span>
@@ -59,7 +68,7 @@
       <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2" y="3.5" width="13" height="10" rx="1.5"></rect><path d="m2.5 4.5 6 5 6-5"></path></svg>
       Contact us
     </a>
-    <a class="side-link" href="index.html">
+    <a class="side-link" href="/" id="logout-link">
       <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M10.5 2.5H14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-3.5"></path><path d="M7 5 3.5 8.5 7 12M3.5 8.5H11"></path></svg>
       Log out
     </a>
@@ -72,39 +81,54 @@
   <div class="container">
     <p class="eyebrow">Client portal</p>
     <h1 id="greet">Welcome.</h1>
-    <p class="sub" id="scope-line">Your intake is in. We&rsquo;re scoping your engagement now — a fixed-price proposal lands in your email within 48 hours.</p>
+    <p class="sub" id="scope-line">Your intake is in. Next: co-build your audit below — answer the discovery questions, generate your call brief, and book the audit call.</p>
     <div class="status-row" aria-label="Engagement status">
       <span class="status done">✓ Intake received</span>
-      <span class="status active">Scoping in progress</span>
-      <span class="status">Proposal — within 48h</span>
+      <span class="status active" id="status-discovery">Discovery — in your hands</span>
+      <span class="status" id="status-call">Audit call</span>
+      <span class="status">Fixed-price proposal</span>
     </div>
 
     <section class="portal-section" aria-labelledby="step0-heading">
-      <h2 id="step0-heading">Step 0 — already possible with your stack</h2>
-      <p class="sub" id="step0-sub">Based on the systems you told us about, here&rsquo;s where automation typically pays off first. The audit turns these into a scored, prioritised roadmap.</p>
-      <div class="possible-grid" id="possible"></div>
+      <h2 id="step0-heading">Step 0 — your operating chain</h2>
+      <p class="sub" id="step0-sub">How value moves through your business — sell, deliver, bill, pay, close, decide — and what your stack already covers at each link. The Step 0 reports below build on this view.</p>
+      <div id="possible"></div>
+      <div id="reports-section" hidden>
+        <h3 class="subsection-heading" id="reports-heading">Your Step 0 reports</h3>
+        <p class="sub">Three previews built from your stack, industry and goals — each downloads as a 1–2 page PDF. Step 1 connects your data and makes them yours.</p>
+        <div class="report-grid" id="reports"></div>
+      </div>
+    </section>
+
+    <section class="portal-section" aria-labelledby="discovery-heading" id="discovery-section">
+      <h2 id="discovery-heading">Step 1 — co-build your audit</h2>
+      <p class="sub">Five minutes of discovery turns your audit call from a sales chat into a working session. Answers save as you go and become your call brief.</p>
+      <div id="discovery-form" class="discovery"></div>
+      <div class="discovery-actions">
+        <a class="btn btn-primary" id="brief-link" href="/report?service=brief">Generate your audit call brief <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn-line" id="book-link" href="mailto:hello@arboleda.co?subject=Audit%20call">Book the audit call</a>
+        <p class="report-note" id="discovery-progress"></p>
+      </div>
+      <div id="step1-deliverables" class="collapse-keep" hidden></div>
+    </section>
+
+    <section class="portal-section" aria-labelledby="engagement-heading" id="engagement-section">
+      <h2 id="engagement-heading">Your engagement</h2>
+      <p class="sub" id="engagement-sub">Proposal, payments and deliverables — everything unlocks here as the engagement progresses.</p>
+      <div id="proposal-card"></div>
+      <div id="engagement-timeline"></div>
+      <div id="deliverables-wrap" hidden>
+        <h3 class="subsection-heading" id="deliverables-heading">Deliverables</h3>
+        <p class="report-note" id="deliverables-crossref" hidden>Step 1 audit deliverables live in the Step 1 section — <a href="#step1-deliverables-heading">view them above ↑</a></p>
+        <div id="deliverables"></div>
+      </div>
+      <div id="payments-list"></div>
     </section>
 
     <section class="portal-section" aria-labelledby="roadmap-heading">
-      <h2 id="roadmap-heading">Your roadmap</h2>
-      <p class="sub">Each step unlocks the next — nothing is committed until it&rsquo;s earned.</p>
-      <div class="rows" style="margin-top:28px">
-        <article class="row">
-          <p class="row-num">01</p>
-          <div><h3 id="step1-name">Ops Automation Audit</h3><p class="tag" style="background:var(--lime)">In scoping</p></div>
-          <p class="row-body">10–15 core processes mapped and scored for automation potential, effort and ROI. Your top five wins, with estimated hours and dollars saved. Deliverable: prioritised roadmap + executive readout.</p>
-        </article>
-        <article class="row">
-          <p class="row-num">02</p>
-          <div><h3>Workflow Automation Build</h3><p class="tag" style="background:#EDF0EC;color:var(--muted)">Unlocks after the audit</p></div>
-          <p class="row-body">Your three to five priority processes implemented as dependable automations — training and handover documentation included. Scoped directly from the audit roadmap.</p>
-        </article>
-        <article class="row">
-          <p class="row-num">03</p>
-          <div><h3>Ongoing Ownership</h3><p class="tag" style="background:#EDF0EC;color:var(--muted)">Unlocks after the build</p></div>
-          <p class="row-body">Care plan or fractional ops lead: monthly health checks, break-fix, improvements and a quarterly ROI report — senior ownership of your stack without the full-time hire.</p>
-        </article>
-      </div>
+      <h2 id="roadmap-heading">Your journey — three practices, one spine</h2>
+      <p class="sub">Foundations, then intelligence, then automation. Most clients enter where it hurts most and circle back — each phase runs the same motion: Step 0 preview → Step 1 audit → Step 2 build.</p>
+      <div class="rows" style="margin-top:28px" id="roadmap-rows"></div>
     </section>
   </div>
 </main>
@@ -113,34 +137,8 @@
 </div><!-- /.portal-layout -->
 
 <script>
-(function () {
-  var POSSIBLE = {
-    'Xero': {
-      title: 'Close &amp; AP/AR automation',
-      body: 'Automated journals, reconciliations and AP/AR approval flows straight out of Xero — typically days off the month-end close.'
-    },
-    'HubSpot': {
-      title: 'Pipeline-to-cash reporting',
-      body: 'Deal-to-invoice handoffs that trigger themselves, and revenue reporting that agrees with what sales sees.'
-    },
-    'Employment Hero': {
-      title: 'People ops on autopilot',
-      body: 'Onboarding and offboarding workflows that run themselves, and payroll-to-ledger sync without re-keying.'
-    },
-    'PSA': {
-      title: 'Project margin visibility',
-      body: 'Utilisation and project-margin reporting fed automatically — WIP and revenue recognition without the spreadsheet.'
-    },
-    'Other ERP': {
-      title: 'Unused native features',
-      body: 'Most ERPs ship workflow features you&rsquo;re already paying for. Switching them on is often the fastest win of all.'
-    },
-    'Spreadsheets': {
-      title: 'Report automation',
-      body: 'Every recurring spreadsheet report is an automation candidate — usually the single biggest pool of hours saved.'
-    }
-  };
-
+(window.ArboledaStore ? ArboledaStore.hydrate() : Promise.resolve()).then(function () {
+  
   var INTENT_COPY = {
     audit: { what: 'Ops Audit' },
     readiness: { what: 'AI Readiness Assessment' },
@@ -156,10 +154,56 @@
   }
   if (data && data.intent && INTENT_COPY[data.intent]) {
     var what = INTENT_COPY[data.intent].what;
-    document.getElementById('scope-line').innerHTML = 'Your intake is in. We&rsquo;re scoping your ' + what + ' now &mdash; a fixed-price proposal lands in your email within 48 hours.';
-    if (data.intent === 'readiness') document.getElementById('step1-name').textContent = 'AI Readiness & Governance Assessment';
-    if (data.intent === 'systems') document.getElementById('step1-name').textContent = 'Systems Review & Target Architecture';
+    document.getElementById('scope-line').innerHTML = 'Your intake is in. Next: co-build your ' + what + ' below &mdash; answer the discovery questions, generate your call brief, and book the call.';
   }
+
+  // ---- Journey: the three-practice arc (foundations -> intelligence -> automation) ----
+  var ROADMAPS = { anatomy: 1, aurora: 1, alchemy: 1 }; // valid focus keys (used by currentFocus)
+  function currentFocus() {
+    // Once an engagement exists, the focus is locked to the engaged service
+    try {
+      var e = JSON.parse(localStorage.getItem('arboleda-engagement') || '{}');
+      if (e.focus && ROADMAPS[e.focus]) return e.focus;
+    } catch (e2) {}
+    var dsc = {};
+    try { dsc = JSON.parse(localStorage.getItem('arboleda-discovery') || '{}'); } catch (e) {}
+    if (dsc.focus && ROADMAPS[dsc.focus]) return dsc.focus;
+    return { readiness: 'aurora', systems: 'anatomy' }[data && data.intent] || 'alchemy';
+  }
+  var JOURNEY = {
+    anatomy: { name: 'Anatomy — foundations', promise: 'Define the spine', body: 'Source systems connected through a unified API layer; your business-defined data ontology and target architecture.' },
+    aurora: { name: 'Aurora — intelligence', promise: 'Decide from one truth', body: 'The KPI set that best serves your business, fed live from connected systems — board pack, unit economics and forecasts that reconcile.' },
+    alchemy: { name: 'Alchemy — automation', promise: 'Remove the manual work', body: 'Agentic automations across close, AP/AR, reporting and approvals — specified, built and run.' }
+  };
+  /* Why each phase follows, given the entry point */
+  var JOURNEY_WHY = {
+    anatomy: { aurora: 'With the spine connected, the decision view is mostly assembly — definitions and dashboards on data that already reconciles.',
+               alchemy: 'Automations built on a trusted spine and agreed metrics are the safest kind — clean data in, clear guardrails around.' },
+    aurora: { anatomy: 'Your decision view will expose exactly where the spine breaks — formalising the ontology hardens every number.',
+              alchemy: 'Once metrics are trusted, automation targets pick themselves — the reports show where the hours leak.' },
+    alchemy: { anatomy: 'Your automations will surface every integration gap and shadow spreadsheet — formalising the spine makes them durable.',
+               aurora: 'With processes automated and data flowing clean, the decision layer is the capstone — metrics fed by what you just built.' }
+  };
+  var CANONICAL = ['anatomy', 'aurora', 'alchemy'];
+  function renderRoadmap(focus) {
+    var entry = JOURNEY[focus] ? focus : null;
+    var order = entry ? [entry].concat(CANONICAL.filter(function (p) { return p !== entry; })) : CANONICAL;
+    document.getElementById('roadmap-rows').innerHTML = order.map(function (id, i) {
+      var p = JOURNEY[id];
+      var chip, why = '';
+      if (entry && i === 0) chip = '<p class="tag" style="background:var(--lime)">Current engagement — your entry point</p>';
+      else if (!entry) chip = '<p class="tag" style="background:#EDF0EC;color:var(--muted)">Phase ' + (i + 1) + '</p>';
+      else {
+        chip = '<p class="tag" style="background:' + (i === 1 ? 'var(--tint);color:var(--accent-deep)' : '#EDF0EC;color:var(--muted)') + '">' + (i === 1 ? 'Recommended next' : 'Later phase') + '</p>';
+        why = ' <i>' + (JOURNEY_WHY[entry][id] || '') + '</i>';
+      }
+      return '<article class="row"><p class="row-num">0' + (i + 1) + '</p>' +
+        '<div><h3>' + p.name + '</h3>' + chip + '</div>' +
+        '<p class="row-body"><b>' + p.promise + '.</b> ' + p.body + why + '</p></article>';
+    }).join('') +
+    '<p class="rep-entities" style="margin-top:14px">The sequence adapts to your entry point — foundations underpin everything, but every engagement starts where it hurts most. Each phase runs the same motion: Step 0 preview \u2192 Step 1 audit \u2192 Step 2 build.</p>';
+  }
+  renderRoadmap(currentFocus());
 
   var grid = document.getElementById('possible');
   var systems = (data && data.systems) ? data.systems : [];
@@ -167,19 +211,573 @@
   if (systems.length === 0) {
     grid.innerHTML = '<div class="possible empty">' +
       '<p style="margin:0;font-size:15.5px;color:var(--muted)">Tell us which systems you run and we&rsquo;ll show what&rsquo;s already possible with your stack.</p>' +
-      '<a class="btn btn-primary" href="start.html">Complete your intake <span class="arrow" aria-hidden="true">→</span></a>' +
+      '<a class="btn btn-primary" href="/start">Complete your intake <span class="arrow" aria-hidden="true">→</span></a>' +
       '</div>';
   } else {
-    grid.innerHTML = systems.map(function (s) {
-      var p = POSSIBLE[s];
-      if (!p) return '';
-      return '<article class="possible">' +
-        '<p class="kicker">' + s + '</p>' +
-        '<h3>' + p.title + '</h3>' +
-        '<p>' + p.body + '</p>' +
-        '</article>';
+    var vc = ArboledaReports.valueChain(data);
+    document.getElementById('step0-sub').innerHTML = 'How value moves through ' + vc.label +
+      ' &mdash; sell, deliver, bill, pay, close, decide &mdash; and what your stack already covers at each link. The Step 0 reports below build on this view.';
+    var chainHtml = '<div class="chain">' + vc.stages.map(function (st, i) {
+      var have = st.tools.filter(function (t) { return systems.indexOf(t) !== -1; });
+      var covered = have.length > 0;
+      var chips = covered
+        ? have.map(function (t) { return '<span class="chain-chip">' + t + '</span>'; }).join('')
+        : '<span class="chain-chip gap">Not covered yet</span>';
+      return '<article class="chain-stage' + (covered ? '' : ' uncovered') + '">' +
+        '<div class="chain-marker"><span class="chain-num">' + (i + 1) + '</span></div>' +
+        '<div class="chain-body">' +
+        '<div class="chain-head"><h3>' + st.name + '</h3><span class="chain-sub">' + st.sub + '</span></div>' +
+        '<div class="chain-chips">' + chips + '</div>' +
+        '<p>' + (covered ? st.possible : st.gap) + '</p>' +
+        '</div></article>';
+    }).join('') + '</div>';
+    if (systems.indexOf('Spreadsheets') !== -1) {
+      chainHtml += '<p class="chain-note">You ticked <b>mostly spreadsheets</b> \u2014 every recurring workbook along this chain is an automation candidate. The audit counts them, link by link.</p>';
+    }
+    chainHtml += '<p class="chain-note">The three reports below read this chain three ways: the processes to automate along it (Alchemy), the metrics it can feed (Aurora), and the spine that connects it (Anatomy).</p>';
+    grid.innerHTML = chainHtml;
+  }
+
+  // Step 0 report previews — assembled from the content library
+  var SERVICES = [
+    { id: 'anatomy', label: 'Anatomy · Foundations' },
+    { id: 'aurora', label: 'Aurora · Intelligence' },
+    { id: 'alchemy', label: 'Alchemy · Automation' }
+  ];
+  if (systems.length > 0 && window.ArboledaReports && window.ArboledaReportRender) {
+    var sec = document.getElementById('reports-section');
+    var rGrid = document.getElementById('reports');
+    sec.hidden = false;
+    rGrid.innerHTML = SERVICES.map(function (s) {
+      var report = ArboledaReports.build(s.id, data);
+      return '<article class="report-card">' +
+        '<div class="report-preview">' + ArboledaReportRender.preview(report, data) +
+        '<div class="report-fade" aria-hidden="true"></div></div>' +
+        '<div class="report-actions">' +
+        '<a class="btn btn-primary" href="/report?service=' + s.id + '">View &amp; download PDF <span class="arrow" aria-hidden="true">→</span></a>' +
+        '<p class="report-note">Generic to your stack — not yet your data.</p>' +
+        '</div></article>';
     }).join('');
   }
+
+  // ---- Step 1 discovery: co-build the audit ----
+  var DISC_KEY = 'arboleda-discovery';
+  var disc = {};
+  try { disc = JSON.parse(localStorage.getItem(DISC_KEY) || '{}'); } catch (e) {}
+  disc.processes = disc.processes || [];
+  disc.processHours = disc.processHours || {};
+  disc.toolAnswers = disc.toolAnswers || {};
+
+  var dForm = document.getElementById('discovery-form');
+  if (systems.length === 0) {
+    document.getElementById('discovery-section').innerHTML =
+      '<h2 id="discovery-heading">Step 1 — co-build your audit</h2>' +
+      '<div class="possible empty" style="margin-top:24px"><p style="margin:0;font-size:15.5px;color:var(--muted)">Complete your intake first — discovery builds on it.</p>' +
+      '<a class="btn btn-primary" href="/start">Complete your intake <span class="arrow" aria-hidden="true">→</span></a></div>';
+  } else if (dForm && window.ArboledaReports) {
+    var esc = ArboledaReportRender.esc;
+    var DC = ArboledaReports.DISCOVERY_CONSTANTS;
+    var TQ = ArboledaReports.DISCOVERY_TOOL_QS;
+    disc.metrics = disc.metrics || [];
+    disc.breaks = disc.breaks || [];
+    disc.toolOwners = disc.toolOwners || {};
+    disc.dataRules = disc.dataRules || [];
+    disc.reportsToday = disc.reportsToday || [];
+    // default focus from intake intent
+    if (!disc.focus) disc.focus = { readiness: 'aurora', systems: 'anatomy' }[data.intent] || 'alchemy';
+
+    function radioRow(name, options, current) {
+      return options.map(function (o) {
+        return '<label class="pill"><input type="radio" name="' + name + '" value="' + esc(o) + '"' +
+          (current === o ? ' checked' : '') + '>' + esc(o) + '</label>';
+      }).join('');
+    }
+
+    var FOCUS_OPTS = [
+      ['alchemy', 'Automation — kill the manual work'],
+      ['aurora', 'Decision intelligence — numbers that reconcile'],
+      ['anatomy', 'Systems foundations — fix the spine'],
+      ['unsure', 'Not sure — recommend on the call']
+    ];
+    function section1HTML() {
+      var f = disc.focus;
+      var h;
+      if (f === 'aurora') {
+        h = '<h3>2. Which numbers hurt?</h3><p class="disc-hint">Tick the questions you can&rsquo;t answer confidently today.</p>';
+        ArboledaReports.auroraCandidates(data).forEach(function (m) {
+          var on = disc.metrics.indexOf(m) !== -1;
+          h += '<div class="disc-proc"><label><input type="checkbox" data-metric="' + esc(m) + '"' + (on ? ' checked' : '') + '> ' + esc(m) + '</label></div>';
+        });
+        h += '<div class="disc-q" style="margin-top:14px"><p class="disc-label">Hours per month spent assembling reports</p>' +
+          '<span class="disc-hours"><input type="number" min="0" max="400" placeholder="h/mo" id="disc-report-hours" value="' + esc(disc.reportHours || '') + '"> h/mo</span></div>';
+      } else if (f === 'anatomy') {
+        h = '<h3>2. Where does data break?</h3><p class="disc-hint">Tick what&rsquo;s true today — re-keying, mismatches, shadow systems.</p>';
+        ArboledaReports.anatomyBreakCandidates(data).forEach(function (b) {
+          var on = disc.breaks.indexOf(b) !== -1;
+          h += '<div class="disc-proc"><label><input type="checkbox" data-break="' + esc(b) + '"' + (on ? ' checked' : '') + '> ' + esc(b) + '</label></div>';
+        });
+      } else {
+        h = '<h3>2. Where do the hours go?</h3><p class="disc-hint">Tick what hurts; add rough hours per month if you know them.</p>';
+        ArboledaReports.buildAlchemy(data).processes.slice(0, 8).forEach(function (p) {
+          var on = disc.processes.indexOf(p.name) !== -1;
+          h += '<div class="disc-proc"><label><input type="checkbox" data-proc="' + esc(p.name) + '"' + (on ? ' checked' : '') + '> ' + esc(p.name) + '</label>' +
+            '<span class="disc-hours"' + (on ? '' : ' hidden') + '><input type="number" min="0" max="400" placeholder="h/mo" data-hours="' + esc(p.name) + '" value="' + esc(disc.processHours[p.name] || '') + '"> h/mo</span></div>';
+        });
+      }
+      var fx = ArboledaReports.FOCUS_EXTRA[f];
+      if (fx) {
+        h += '<div class="disc-q" style="margin-top:16px"><p class="disc-label">' + esc(fx.label) + '</p>';
+        if (fx.multi) {
+          h += '<div class="pills">' + fx.options.map(function (o) {
+            var on = (disc[fx.key] || []).indexOf(o) !== -1;
+            return '<label class="pill"><input type="checkbox" data-fxmulti="' + fx.key + '" value="' + esc(o) + '"' + (on ? ' checked' : '') + '>' + esc(o) + '</label>';
+          }).join('') + '</div>';
+        } else {
+          h += '<div class="pills" data-set="' + fx.key + '">' + radioRow('fx-' + fx.key, fx.options, disc[fx.key]) + '</div>';
+        }
+        h += '</div>';
+      }
+      return h;
+    }
+
+    var h = '<div class="disc-group"><h3>1. Where should the audit focus?</h3><p class="disc-hint">Pick the lens — the questions below adapt. You can change it any time.</p>' +
+      '<div class="pills" id="focus-pills">' +
+      FOCUS_OPTS.map(function (o) {
+        return '<label class="pill"><input type="radio" name="focus" value="' + o[0] + '"' + (disc.focus === o[0] ? ' checked' : '') + '>' + esc(o[1]) + '</label>';
+      }).join('') + '</div></div>';
+    h += '<div class="disc-group" id="disc-section1">' + section1HTML() + '</div>';
+    h += '<div class="disc-group"><h3>3. Your systems, in practice</h3>';
+    systems.forEach(function (t) {
+      var q = TQ[t]; if (!q) return;
+      h += '<div class="disc-q"><p class="disc-label">' + esc(t) + ' — ' + esc(q.q) + '</p>';
+      if (q.freetext) h += '<input type="text" class="disc-text" data-tool="' + esc(t) + '" placeholder="e.g. NetSuite — AP module, approvals unused" value="' + esc(disc.toolAnswers[t] || '') + '">';
+      else h += '<div class="pills" data-tool-group="' + esc(t) + '">' + radioRow('tq-' + t.replace(/\W/g, ''), q.options, disc.toolAnswers[t]) + '</div>';
+      h += '<input type="text" class="disc-text disc-owner" data-owner="' + esc(t) + '" placeholder="Who admins it? e.g. Sam, or our external bookkeeper" value="' + esc(disc.toolOwners[t] || '') + '">';
+      h += '</div>';
+    });
+    h += '</div><div class="disc-group"><h3>4. Team, success &amp; constraints</h3>';
+    h += '<div class="disc-q"><p class="disc-label">People in finance/ops</p><div class="pills" data-set="teamSize">' + radioRow('teamSize', DC.teamSizes, disc.teamSize) + '</div></div>';
+    h += '<div class="disc-q"><p class="disc-label">What does success look like 90 days after the audit?</p><textarea class="disc-text" id="disc-success" rows="2" placeholder="e.g. close in 5 days; board pack assembles itself">' + esc(disc.success || '') + '</textarea></div>';
+    h += '<div class="disc-q"><p class="disc-label">Timeline</p><div class="pills" data-set="timeline">' + radioRow('timeline', DC.timelines, disc.timeline) + '</div></div>';
+    h += '<div class="disc-q"><p class="disc-label">Budget comfort to start</p><div class="pills" data-set="budget">' + radioRow('budget', DC.budgets, disc.budget) + '</div></div>';
+    h += '</div>';
+    var CN = ArboledaReports.DISCOVERY_CONNECT;
+    h += '<div class="disc-group"><h3>5. Getting connectable</h3><p class="disc-hint">Step 2 connects your systems (read-only first). These answers stop that stalling.</p>';
+    [CN.approver, CN.sandbox, CN.joinKeys, CN.invoiceVol].forEach(function (q) {
+      h += '<div class="disc-q"><p class="disc-label">' + esc(q.label) + '</p><div class="pills" data-set="' + q.key + '">' + radioRow('cn-' + q.key, q.options, disc[q.key]) + '</div></div>';
+    });
+    h += '<div class="disc-q"><p class="disc-label">' + esc(CN.dataRules.label) + '</p><div class="pills">' + CN.dataRules.options.map(function (o) {
+      var on = disc.dataRules.indexOf(o) !== -1;
+      return '<label class="pill"><input type="checkbox" data-fxmulti="dataRules" value="' + esc(o) + '"' + (on ? ' checked' : '') + '>' + esc(o) + '</label>';
+    }).join('') + '</div></div>';
+    h += '<div class="disc-q"><p class="disc-label">' + esc(CN.existing.label) + '</p><input type="text" class="disc-text" id="disc-existing" placeholder="' + esc(CN.existing.placeholder) + '" value="' + esc(disc.existingIntegrations || '') + '"></div>';
+    h += '</div>';
+    dForm.innerHTML = h;
+
+    function saveDisc() { try { localStorage.setItem(DISC_KEY, JSON.stringify(disc)); } catch (e) {} updateProgress(); }
+    function updateProgress() {
+      var done = 0, total = 5;
+      var s1 = disc.focus === 'aurora' ? disc.metrics : (disc.focus === 'anatomy' ? disc.breaks : disc.processes);
+      if (s1.length) done++;
+      if (disc.connectApprover || disc.sandbox || disc.joinKeys || disc.invoiceVol || disc.dataRules.length || disc.existingIntegrations) done++;
+      if (Object.keys(disc.toolAnswers).filter(function (k) { return disc.toolAnswers[k]; }).length >= Math.min(systems.length, 1)) done++;
+      if (disc.teamSize) done++;
+      if (disc.success || disc.timeline || disc.budget) done++;
+      var el = document.getElementById('discovery-progress');
+      var ready = done >= 3;
+      el.textContent = ready ? 'Discovery complete — your brief is ready. Book the call and bring it.'
+        : done + ' of 5 discovery areas answered — the brief gets sharper with each one.';
+      document.getElementById('status-discovery').className = 'status ' + (ready ? 'done' : 'active');
+      document.getElementById('status-discovery').textContent = ready ? '✓ Discovery — co-built' : 'Discovery — in your hands';
+      document.getElementById('status-call').className = 'status ' + (ready ? 'active' : '');
+      // CTA emphasis follows readiness: filling the form is the primary action until the brief is worth generating
+      var briefBtn = document.getElementById('brief-link');
+      briefBtn.className = 'btn ' + (done >= 1 ? 'btn-primary' : 'btn-line');
+      var book = document.getElementById('book-link');
+      var subj = encodeURIComponent('Audit call — ' + (data.company || ''));
+      var body = encodeURIComponent('Hi arboleda,\n\nDiscovery is done in the portal and my audit call brief is ready. Some times that suit:\n\n1.\n2.\n\n' + (data.name || '') + ', ' + (data.company || ''));
+      book.href = 'mailto:hello@arboleda.co?subject=' + subj + '&body=' + body;
+    }
+    dForm.addEventListener('change', function (e) {
+      var t = e.target;
+      if (t.name === 'focus') {
+        disc.focus = t.value;
+        document.getElementById('disc-section1').innerHTML = section1HTML();
+        renderRoadmap(disc.focus);
+      }
+      if (t.hasAttribute('data-metric')) {
+        var mn = t.getAttribute('data-metric');
+        if (t.checked) { if (disc.metrics.indexOf(mn) === -1) disc.metrics.push(mn); }
+        else disc.metrics = disc.metrics.filter(function (n) { return n !== mn; });
+      }
+      if (t.hasAttribute('data-break')) {
+        var bn = t.getAttribute('data-break');
+        if (t.checked) { if (disc.breaks.indexOf(bn) === -1) disc.breaks.push(bn); }
+        else disc.breaks = disc.breaks.filter(function (n) { return n !== bn; });
+      }
+      if (t.id === 'disc-report-hours') disc.reportHours = t.value;
+      if (t.hasAttribute('data-fxmulti')) {
+        var fk = t.getAttribute('data-fxmulti');
+        disc[fk] = disc[fk] || [];
+        if (t.checked) { if (disc[fk].indexOf(t.value) === -1) disc[fk].push(t.value); }
+        else disc[fk] = disc[fk].filter(function (v) { return v !== t.value; });
+      }
+      if (t.hasAttribute('data-owner')) disc.toolOwners[t.getAttribute('data-owner')] = t.value;
+      if (t.id === 'disc-existing') disc.existingIntegrations = t.value;
+      if (t.hasAttribute('data-proc')) {
+        var name = t.getAttribute('data-proc');
+        var span = t.closest('.disc-proc').querySelector('.disc-hours');
+        if (t.checked) { if (disc.processes.indexOf(name) === -1) disc.processes.push(name); span.hidden = false; }
+        else { disc.processes = disc.processes.filter(function (n) { return n !== name; }); span.hidden = true; }
+      }
+      if (t.hasAttribute('data-hours')) disc.processHours[t.getAttribute('data-hours')] = t.value;
+      var pg = t.closest('[data-tool-group]'); if (pg) disc.toolAnswers[pg.getAttribute('data-tool-group')] = t.value;
+      if (t.classList.contains('disc-text') && t.hasAttribute('data-tool')) disc.toolAnswers[t.getAttribute('data-tool')] = t.value;
+      var st = t.closest('[data-set]'); if (st) disc[st.getAttribute('data-set')] = t.value;
+      if (t.id === 'disc-success') disc.success = t.value;
+      saveDisc();
+    });
+    dForm.addEventListener('input', function (e) {
+      var t = e.target;
+      if (t.id === 'disc-success') disc.success = t.value;
+      if (t.id === 'disc-report-hours') disc.reportHours = t.value;
+      if (t.hasAttribute('data-owner')) disc.toolOwners[t.getAttribute('data-owner')] = t.value;
+      if (t.id === 'disc-existing') disc.existingIntegrations = t.value;
+      if (t.hasAttribute('data-hours')) disc.processHours[t.getAttribute('data-hours')] = t.value;
+      if (t.classList.contains('disc-text') && t.hasAttribute('data-tool')) disc.toolAnswers[t.getAttribute('data-tool')] = t.value;
+      try { localStorage.setItem(DISC_KEY, JSON.stringify(disc)); } catch (err) {}
+    });
+    updateProgress();
+  }
+
+  // ---- Engagement: payment gates & deliverable unlocks (Phase A prototype) ----
+  (function () {
+    if (!window.ArboledaReports) return;
+    var R = ArboledaReports;
+    var eng = {};
+    try { eng = JSON.parse(localStorage.getItem('arboleda-engagement') || '{}'); } catch (e) {}
+    eng.payments = eng.payments || [];
+    // Dev/demo toggle: /portal?state=proposal|step1_paid|step1_delivered|step2_paid|m2|m3|discovery
+    var qs = new URLSearchParams(window.location.search).get('state');
+    if (qs && (R.ENGAGEMENT_STATES.indexOf(qs) !== -1)) {
+      eng.state = qs === 'discovery' ? null : qs;
+      try { localStorage.setItem('arboleda-engagement', JSON.stringify(eng)); } catch (e) {}
+      try { history.replaceState(null, '', '/portal'); } catch (e) {}
+    }
+    var rank = R.stateRank(eng.state || 'discovery');
+    eng.signoffs = eng.signoffs || {};
+    var focus = eng.focus || currentFocus();
+    var D = R.DELIVERABLES[focus] || R.DELIVERABLES.unsure;
+    var audit = eng.price || R.auditPrice(data), step2 = R.step2Price(data), credit = Math.min(audit, step2);
+    var m = R.money;
+    function saveEng() { try { localStorage.setItem('arboleda-engagement', JSON.stringify(eng)); } catch (e) {} }
+
+    // ---- Operator mode (?op=1 to enable, ?op=0 to disable) ----
+    var opq = new URLSearchParams(window.location.search).get('op');
+    if (opq === '1') { try { localStorage.setItem('arboleda-operator', '1'); } catch (e) {} }
+    if (opq === '0') { try { localStorage.removeItem('arboleda-operator'); } catch (e) {} }
+    var isOp = false;
+    try { isOp = localStorage.getItem('arboleda-operator') === '1'; } catch (e) {}
+    if (isOp) {
+      var strip = document.createElement('div');
+      strip.className = 'op-strip';
+      var opHtml = '<span class="op-label">Operator</span><span class="op-state">' + (eng.state || 'discovery') + (eng.focus ? ' · ' + eng.focus : '') + '</span>';
+      if (rank === 0) {
+        opHtml += '<span class="op-group"><input type="number" id="op-price" value="' + R.auditPrice(data) + '" min="1000" step="500" aria-label="Audit price">' +
+          '<button class="op-btn" id="op-propose">Post proposal (' + focus + ')</button></span>';
+      }
+      if (rank === 2) opHtml += '<button class="op-btn" id="op-deliver">Mark audit delivered</button>';
+      if (rank === 4) opHtml += '<button class="op-btn" id="op-signoff">' + (eng.signoffs.connection ? '✓ Connection signed off' : 'Confirm connection sign-off') + '</button>';
+      if (rank === 5) opHtml += '<button class="op-btn" id="op-handover">' + (eng.signoffs.handover ? '✓ Handover confirmed' : 'Confirm handover ready') + '</button>';
+      if (rank >= 1) opHtml += '<button class="op-btn op-danger" id="op-reset">Reset engagement</button>';
+      opHtml += '<a class="op-exit" href="/portal?op=0">Exit operator mode</a>';
+      strip.innerHTML = opHtml;
+      document.querySelector('.portal-main .container').prepend(strip);
+      var cloudOp = window.ArboledaStore && ArboledaStore.mode === 'cloud' && ArboledaStore.isLoggedIn();
+      var opClientEmail = (data && data.email) || (window.ArboledaStore && ArboledaStore.currentEmail());
+      function opBind(id, fn, cloudBody) {
+        var b = document.getElementById(id); if (!b) return;
+        b.addEventListener('click', function () {
+          if (cloudOp && cloudBody) {
+            ArboledaStore.api('/api/operator', cloudBody()).then(function (res) {
+              if (!res.ok) { alert(res.data.error || 'Operator action failed'); return; }
+              window.location.reload();
+            });
+            return;
+          }
+          fn(); saveEng(); window.location.reload();
+        });
+      }
+      opBind('op-propose', function () {
+        eng.state = 'proposal';
+        eng.focus = currentFocus();
+        eng.price = parseInt(document.getElementById('op-price').value, 10) || R.auditPrice(data);
+      }, function () {
+        return { action: 'propose', clientEmail: opClientEmail, focus: currentFocus(),
+          price: parseInt(document.getElementById('op-price').value, 10) || R.auditPrice(data) };
+      });
+      opBind('op-deliver', function () { eng.state = 'step1_delivered'; },
+        function () { return { action: 'deliver', clientEmail: opClientEmail }; });
+      opBind('op-signoff', function () { eng.signoffs.connection = true; },
+        function () { return { action: 'signoff', clientEmail: opClientEmail, kind: 'connection' }; });
+      opBind('op-handover', function () { eng.signoffs.handover = true; },
+        function () { return { action: 'signoff', clientEmail: opClientEmail, kind: 'handover' }; });
+      opBind('op-reset', function () { eng = { payments: [], signoffs: {} }; });
+
+      // Operator runbook checklist (per engaged service, persisted)
+      if (rank >= 1 && R.OPERATOR_RUNBOOKS) {
+        var rb = R.OPERATOR_RUNBOOKS[focus] || R.OPERATOR_RUNBOOKS.unsure;
+        var ticksAll = {};
+        try { ticksAll = JSON.parse(localStorage.getItem('arboleda-runbook') || '{}'); } catch (e) {}
+        var ticks = ticksAll[focus] = ticksAll[focus] || {};
+        var totalSteps = 0, doneSteps = 0;
+        rb.forEach(function (ph) { ph.steps.forEach(function (st) { totalSteps++; if (ticks[st[0]]) doneSteps++; }); });
+        var panel = document.createElement('div');
+        panel.className = 'op-runbook';
+        panel.innerHTML = '<div class="op-rb-head"><h3>Operator runbook — ' + focus + '</h3>' +
+          '<span class="op-rb-progress" id="op-rb-progress">' + doneSteps + ' / ' + totalSteps + ' steps</span>' +
+          '<button class="op-btn" type="button" id="op-rb-toggle">' + (doneSteps && doneSteps < totalSteps ? 'Show' : 'Show') + '</button></div>' +
+          '<div id="op-rb-body" hidden>' +
+          rb.map(function (ph) {
+            return '<div class="op-rb-phase"><h4>' + ph.name + '</h4>' +
+              ph.steps.map(function (st) {
+                return '<label class="op-rb-step"><input type="checkbox" data-rb="' + st[0] + '"' + (ticks[st[0]] ? ' checked' : '') + '><span class="op-rb-id">' + st[0] + '</span> ' + st[1] + '</label>';
+              }).join('') + '</div>';
+          }).join('') + '</div>';
+        strip.insertAdjacentElement('afterend', panel);
+        var rbBody = panel.querySelector('#op-rb-body');
+        var rbToggle = panel.querySelector('#op-rb-toggle');
+        rbToggle.addEventListener('click', function () {
+          rbBody.hidden = !rbBody.hidden;
+          rbToggle.textContent = rbBody.hidden ? 'Show' : 'Hide';
+        });
+        panel.addEventListener('change', function (e) {
+          if (!e.target.hasAttribute('data-rb')) return;
+          ticks[e.target.getAttribute('data-rb')] = e.target.checked;
+          if (!e.target.checked) delete ticks[e.target.getAttribute('data-rb')];
+          try { localStorage.setItem('arboleda-runbook', JSON.stringify(ticksAll)); } catch (err) {}
+          var dn = 0; rb.forEach(function (ph) { ph.steps.forEach(function (st) { if (ticks[st[0]]) dn++; }); });
+          panel.querySelector('#op-rb-progress').textContent = dn + ' / ' + totalSteps + ' steps';
+        });
+      }
+    }
+
+    // Status row follows engagement state once a proposal exists
+    if (rank >= 1) {
+      var chips = [
+        ['✓ Discovery', 'done'],
+        rank === 1 ? ['Proposal — accept & pay deposit', 'active'] : ['✓ Audit paid', 'done'],
+        rank === 2 ? ['Audit in progress', 'active'] : (rank >= 3 ? ['✓ Audit delivered', 'done'] : ['Audit', '']),
+        rank === 3 ? ['Step 2 proposal ready', 'active'] : (rank >= 4 ? ['✓ Step 2 signed', 'done'] : ['Step 2', '']),
+        rank >= 4 ? ['Build — milestone ' + Math.min(rank - 3, 3) + ' of 3', rank >= 6 ? 'done' : 'active'] : ['Build', '']
+      ];
+      document.querySelector('.status-row').innerHTML = chips.map(function (c) {
+        return '<span class="status ' + c[1] + '">' + c[0] + '</span>';
+      }).join('');
+    }
+
+    // Proposal / payment card per state
+    var card = document.getElementById('proposal-card');
+    var scopePreview = (function () {
+      try {
+        var b = R.buildBrief(data, disc);
+        return b.scope.slice(0, 3).map(function (s) { return '<li>' + s + '</li>'; }).join('');
+      } catch (e) { return ''; }
+    })();
+    function payBtn(stage, label) {
+      return '<a class="btn btn-primary" href="/pay?stage=' + stage + '">' + label + ' <span class="arrow" aria-hidden="true">→</span></a>';
+    }
+    var html = '';
+    if (rank === 0) {
+      html = '<div class="prop-card muted"><h3>Fixed-price proposal</h3><p>Appears here after your audit call — scope from your brief, price by company size, no surprises. The audit fee credits 100% against Step 2 within 90 days.</p></div>';
+    } else if (rank === 1) {
+      html = '<div class="prop-card"><p class="prop-kicker">Step 1 · fixed price</p><h3>Your audit proposal — ' + m(audit) + '</h3>' +
+        '<p>Scoped from your brief and call. First on the list:</p><ol class="rep-ol">' + scopePreview + '</ol>' +
+        '<ul class="prop-terms"><li>50% deposit to kick off — refundable until kickoff</li><li>Balance at the executive readout</li><li><b>100% credits against Step 2</b> if signed within 90 days</li></ul>' +
+        '<div class="prop-actions">' + payBtn('audit-deposit', 'Accept & pay deposit (' + m(Math.round(audit / 2)) + ')') + '</div></div>';
+    } else if (rank === 2) {
+      html = '<div class="prop-card"><p class="prop-kicker">Step 1 · in progress</p><h3>Audit underway</h3>' +
+        '<p>Working documents appear under deliverables as they&rsquo;re produced. The balance (' + m(audit - Math.round(audit / 2)) + ') is due at the executive readout and unlocks the final deliverables.</p>' +
+        '<div class="prop-actions">' + payBtn('audit-balance', 'Pay balance at readout') + '</div></div>';
+    } else if (rank === 3) {
+      html = '<div class="prop-card"><p class="prop-kicker">Step 2 · fixed scope</p><h3>Build proposal — ' + m(step2) + ' <span class="prop-credit">− ' + m(credit) + ' audit credit = ' + m(step2 - credit) + '</span></h3>' +
+        '<p>' + (R.STEP2_PATH[focus] || R.STEP2_PATH.unsure) + '</p>' +
+        '<ul class="prop-terms"><li>40% on signing — starts the connection phase (read-only first)</li><li>40% at connection sign-off</li><li>20% at handover</li></ul>' +
+        '<div class="prop-actions">' + payBtn('step2', 'Sign & pay milestone 1 (' + m(Math.round((step2 - credit) * 0.4)) + ')') + '</div></div>';
+    } else if (rank === 4) {
+      html = '<div class="prop-card"><p class="prop-kicker">Step 2 · milestone 1 — connection</p><h3>Connection phase active</h3>' +
+        '<p>Read-only connections are being established. Milestone 2 is due at connection sign-off and unlocks the build deliverables.</p>' +
+        '<div class="prop-actions">' + (eng.signoffs.connection
+          ? payBtn('m2', 'Connection signed off — pay milestone 2')
+          : '<p class="report-note">Milestone 2 unlocks once we confirm connection sign-off with you.</p>') + '</div></div>';
+    } else if (rank === 5) {
+      html = '<div class="prop-card"><p class="prop-kicker">Step 2 · milestone 2 — build</p><h3>Build phase active</h3>' +
+        '<p>Staging deliverables are unlocked below. Milestone 3 is due at handover and unlocks production cutover, runbooks and training.</p>' +
+        '<div class="prop-actions">' + (eng.signoffs.handover
+          ? payBtn('m3', 'Handover confirmed — pay milestone 3')
+          : '<p class="report-note">Milestone 3 unlocks once we confirm handover readiness with you.</p>') + '</div></div>';
+    } else {
+      html = '<div class="prop-card"><p class="prop-kicker">Delivered</p><h3>Engagement complete ✓</h3>' +
+        '<p>Everything below is yours. The care plan keeps it improving — monthly health checks, break-fix and a quarterly ROI report.</p>' +
+        '<div class="prop-actions"><a class="btn btn-primary" href="mailto:hello@arboleda.co?subject=Care%20plan">Talk about the care plan <span class="arrow" aria-hidden="true">→</span></a></div></div>';
+    }
+    card.innerHTML = html;
+
+    // ---- Milestone timeline (visible once the audit is underway) ----
+    if (rank >= 2) {
+      function payDate(stage) { var p = eng.payments.filter(function (x) { return x.stage === stage; })[0]; return p ? p.date : null; }
+      function fmt(iso) {
+        var dt = new Date(iso + 'T00:00:00');
+        return isNaN(dt) ? iso : dt.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' });
+      }
+      function addDays(iso, n) {
+        var dt = new Date(iso + 'T00:00:00'); dt.setDate(dt.getDate() + n);
+        return dt.toISOString().slice(0, 10);
+      }
+      function dateOr(actual, base, days, fallback) {
+        if (actual) return fmt(actual);
+        if (base) return 'target ' + fmt(addDays(base, days));
+        return fallback;
+      }
+      var kick = payDate('audit-deposit'), bal = payDate('audit-balance'), sign = payDate('step2'), m2p = payDate('m2'), m3p = payDate('m3');
+      var items = [
+        { label: 'Audit kickoff', done: rank >= 2, date: kick ? fmt(kick) : '—' },
+        { label: 'Executive readout — audit deliverables unlock', done: rank >= 3, date: rank >= 3 ? fmt(bal || kick || '') : dateOr(null, kick, 21, '~3 weeks after kickoff') },
+        { label: 'Step 2 signed — connection phase starts', done: rank >= 4, date: rank >= 4 ? fmt(sign || '') : 'on your decision (90-day audit credit)' },
+        { label: 'Connection sign-off — build phase starts', done: rank >= 5, date: rank >= 5 ? fmt(m2p || '') : dateOr(null, sign, 14, '~2 weeks after signing') },
+        { label: 'Handover — production live', done: rank >= 6, date: rank >= 6 ? fmt(m3p || '') : dateOr(null, sign, 56, '~8 weeks after signing') }
+      ];
+      var activeSet = false;
+      var th = '<h3 class="subsection-heading">Timeline</h3><div class="timeline">';
+      items.forEach(function (it) {
+        var cls = it.done ? 'done' : (!activeSet ? 'active' : 'upcoming');
+        if (!it.done && !activeSet) activeSet = true;
+        th += '<div class="tl-item ' + cls + '"><span class="tl-dot">' + (it.done ? '✓' : '') + '</span>' +
+          '<div class="tl-body"><p class="tl-label">' + it.label + '</p><p class="tl-date">' + it.date + '</p></div></div>';
+      });
+      document.getElementById('engagement-timeline').innerHTML = th + '</div>';
+    }
+
+    // Deliverables grid (visible from first payment)
+    if (rank >= 2) {
+      document.getElementById('deliverables-wrap').hidden = false;
+      var step1Group = { items: D.step1, label: 'Step 1 — audit deliverables', sub: 'Fixed-scope diagnostic', unlockAt: 3, progressAt: 2, lockNote: 'unlocks at the audit readout' };
+      var groups = [
+        { items: D.m1, label: 'Milestone 1 — connect', sub: 'Read-only connections', unlockAt: 4, progressAt: 4, lockNote: 'unlocks when Step 2 is signed' },
+        { items: D.m2, label: 'Milestone 2 — build', sub: 'Staging, on your data', unlockAt: 5, progressAt: 5, lockNote: 'unlocks at connection sign-off' },
+        { items: D.m3, label: 'Milestone 3 — deliver', sub: 'Production & handover', unlockAt: 6, progressAt: 6, lockNote: 'unlocks at handover' }
+      ];
+      function groupHTML(g) {
+        var unlocked = rank >= g.unlockAt;
+        var inProgress = !unlocked && rank >= g.progressAt;
+        var chip = unlocked
+          ? '<span class="deliv-chip open">✓ Unlocked</span>'
+          : (inProgress
+            ? '<span class="deliv-chip progress">In progress — ' + g.lockNote + '</span>'
+            : '<span class="deliv-chip">Locked — ' + g.lockNote + '</span>');
+        return '<section class="deliv-group' + (unlocked ? ' open' : (inProgress ? ' progressing' : ' locked')) + '">' +
+          '<div class="deliv-group-head"><div><h4>' + g.label + '</h4><p class="deliv-group-sub">' + g.sub + '</p></div>' + chip + '</div>' +
+          '<div class="deliv-grid">' +
+          g.items.map(function (it) {
+            var href = it[2] ? '/report?service=sample&type=' + it[2] : '/report?service=' + (focus === 'unsure' ? 'alchemy' : focus);
+            return '<article class="deliv' + (unlocked ? '' : ' locked') + '">' +
+              '<h4>' + it[0] + '</h4><p>' + it[1] + '</p>' +
+              (unlocked ? '<a class="btn btn-line btn-sm" href="' + href + '">View sample <span class="arrow" aria-hidden="true">→</span></a>' : '') +
+              '</article>';
+          }).join('') +
+          '</div></section>';
+      }
+      // Step 1 deliverables live in the Step 1 section
+      var s1d = document.getElementById('step1-deliverables');
+      s1d.hidden = false;
+      s1d.innerHTML = '<h3 class="subsection-heading" id="step1-deliverables-heading">Audit deliverables</h3>' + groupHTML(step1Group);
+      // Step 2 milestone deliverables in the engagement section, with a cross-reference up
+      document.getElementById('deliverables').innerHTML = groups.map(groupHTML).join('');
+      document.getElementById('deliverables-crossref').hidden = false;
+      // sidebar unlock
+      var side = document.getElementById('side-deliverables');
+      if (side) {
+        var a = document.createElement('a');
+        a.className = 'side-link'; a.href = '#deliverables-heading'; a.setAttribute('data-side', '');
+        a.innerHTML = side.querySelector('svg').outerHTML + ' Deliverables';
+        side.replaceWith(a);
+      }
+    }
+
+    // ---- Progressive collapse: completed steps fold into summary bars ----
+    var collapseOverrides = {};
+    try { collapseOverrides = JSON.parse(localStorage.getItem('arboleda-collapse') || '{}'); } catch (e) {}
+    var collapsibles = {};
+    function makeCollapsible(sec, key, summary, extraHtml) {
+      if (!sec) return;
+      var bar = document.createElement('div');
+      bar.className = 'collapse-bar';
+      bar.innerHTML = '<p class="collapse-summary">' + summary + '</p>' + (extraHtml || '') +
+        '<button class="btn btn-line btn-sm collapse-toggle" type="button"></button>';
+      sec.querySelector('h2').insertAdjacentElement('afterend', bar);
+      var btn = bar.querySelector('.collapse-toggle');
+      function set(c) { sec.classList.toggle('collapsed', c); btn.textContent = c ? 'Show' : 'Hide'; }
+      var collapsed = (key in collapseOverrides) ? collapseOverrides[key] : true;
+      set(collapsed);
+      collapsibles[key] = { sec: sec, expand: function () { collapsed = false; set(false); } };
+      btn.addEventListener('click', function () {
+        collapsed = !collapsed;
+        collapseOverrides[key] = collapsed;
+        try { localStorage.setItem('arboleda-collapse', JSON.stringify(collapseOverrides)); } catch (e) {}
+        set(collapsed);
+      });
+    }
+    if (rank >= 1) {
+      var coveredLinks = document.querySelectorAll('.chain-stage:not(.uncovered)').length;
+      makeCollapsible(document.querySelector('[aria-labelledby="step0-heading"]'), 'step0',
+        (coveredLinks ? coveredLinks + ' of 6 chain links covered' : 'Your operating chain') + ' · 3 report previews');
+      makeCollapsible(document.getElementById('discovery-section'), 'discovery',
+        'Discovery co-built — your answers shaped the proposal' + (rank >= 1 ? ' below' : '') + '.',
+        '<a class="btn btn-line btn-sm" href="/report?service=brief">View brief</a>');
+      // Sidebar navigation into a collapsed section expands it first
+      document.querySelectorAll('[data-side]').forEach(function (link) {
+        link.addEventListener('click', function () {
+          var hash = link.getAttribute('href');
+          Object.keys(collapsibles).forEach(function (k) {
+            var c = collapsibles[k];
+            if (hash && hash.charAt(0) === '#' && c.sec.querySelector(hash)) c.expand();
+          });
+        });
+      });
+    }
+
+    // Payments list
+    if (eng.payments.length) {
+      var PAY_LABELS = {
+        'audit-deposit': ['Audit — 50% deposit', 'Kickoff payment · refundable until kickoff'],
+        'audit-balance': ['Audit — balance', 'Paid at the executive readout · unlocked final deliverables'],
+        'step2': ['Step 2 — milestone 1 of 3', '40% on signing · started the connection phase'],
+        'm2': ['Step 2 — milestone 2 of 3', '40% at connection sign-off · unlocked the build phase'],
+        'm3': ['Step 2 — milestone 3 of 3', '20% at handover · production cutover & training']
+      };
+      function fmtDate(iso) {
+        var dt = new Date(iso + 'T00:00:00');
+        return isNaN(dt) ? iso : dt.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+      }
+      var total = eng.payments.reduce(function (a, p) { return a + (p.amount || 0); }, 0);
+      document.getElementById('payments-list').innerHTML =
+        '<h3 class="subsection-heading">Payments</h3><table class="rep-table" style="max-width:640px"><tbody>' +
+        eng.payments.map(function (p) {
+          var L = PAY_LABELS[p.stage] || [p.stage, ''];
+          return '<tr><td style="white-space:nowrap">' + fmtDate(p.date) + '</td>' +
+            '<td><b>' + L[0] + '</b><br><span style="color:var(--muted);font-size:12px">' + L[1] + '</span></td>' +
+            '<td style="text-align:right;vertical-align:middle"><b>' + m(p.amount) + '</b></td></tr>';
+        }).join('') +
+        '<tr class="pay-total-row"><td></td><td><b>Total paid</b></td><td style="text-align:right"><b>' + m(total) + '</b></td></tr>' +
+        '</tbody></table>';
+    }
+  })();
+
+  // Log out clears the account flag (intake will ask for a password again)
+  var logout = document.getElementById('logout-link');
+  if (logout) logout.addEventListener('click', function () {
+    try { localStorage.removeItem('arboleda-account'); } catch (e) {}
+  });
 
   // Sidebar active state + programmatic scroll (global smooth scroll-behavior
   // breaks native fragment jumps in embedded contexts)
@@ -197,7 +795,7 @@
       }
     });
   });
-})();
+});
 </script>
 
 </body>

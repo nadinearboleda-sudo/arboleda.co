@@ -1,0 +1,19 @@
+# arboleda.co
+
+> Independent AI consultancy that automates finance and operations for Australian small and mid-sized businesses (roughly 50–500 staff). Every engagement starts with a fixed-scope, fixed-price Ops Automation Audit, then earns the build and ongoing ownership. Vendor-neutral — paid by the client, never the vendor.
+
+Contact: hello@arboleda.co
+
+## Practices
+
+- [Alchemy — Finance & ops automation](https://arboleda.co/alchemy): Turns manual finance and operations work — month-end close, AP/AR, reporting, approvals, expense workflows — into reliable AI-powered workflows using tools such as Claude, LangChain and Manus, native ERP features, or light scripting.
+- [Aurora — Decision intelligence & advisory](https://arboleda.co/aurora): Pulls live data from source systems into one reconciled decision view — board packs, unit economics, forecasts, AI readiness assessment and scenario-based planning.
+- [Anatomy — Systems architecture & vendor selection](https://arboleda.co/anatomy): Current-state systems mapping, target-state architecture and integration across Xero, HubSpot, PSA and Employment Hero, plus strictly vendor-neutral software selection.
+
+## How we work
+
+- [How we work](https://arboleda.co/how-we-work): Audit → Build → Run. The Ops Automation Audit runs 2–3 weeks, maps 10–15 core finance/ops processes, scores each for automation potential, effort and ROI, and delivers a prioritised roadmap with the top five automatable processes.
+
+## Audience
+
+Australian companies of ~50–500 staff, typically tech or tech-enabled, with a finance/ops team of three or more.
