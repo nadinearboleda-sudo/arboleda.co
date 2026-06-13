@@ -12,18 +12,47 @@ you can do (they need your logins, your card, your domain).
 ## Stage 1 — Static site live (≈1 hour, free)
 
 1. **Create a GitHub repo** (private) and push the project. The deploy source is the `site/` folder.
-2. **Cloudflare Pages** → Create project → connect the repo.
+2. **Cloudflare Pages** → Create project → connect the repo. Production branch: `main`.
+   - Framework preset: *None*
    - Build command: *(none)*
-   - Build output directory: `site`
+   - **Root directory** (Build settings → advanced): **`site`**
+   - Build output directory: `/` *(the root dir itself)*
    - Deploy. You'll get a `https://<project>.pages.dev` URL.
-3. **Smoke test** the `.pages.dev` URL: home, `/alchemy`, `/start` (complete an intake), `/portal`, a `/report?service=sample&type=sysmap`. Clean URLs come from `site/_redirects`.
-4. **Custom domain**: Pages → Custom domains → add `arboleda.co` and `www.arboleda.co`.
+
+   > ⚠️ **Set Root directory = `site`, not just output directory = `site`.** The server API
+   > lives in `site/functions/`, and Cloudflare only detects functions at `<root directory>/functions`.
+   > Leaving the root at the repo root makes it look for `/functions` (which doesn't exist), so every
+   > `/api/*` route silently 404s. Root directory = `site` also makes `site/_redirects` take effect.
+3. **Lead-capture env vars** (Settings → Environment variables → Production) — so the intake form
+   emails you new leads. See [Resend setup](#resend--lead-capture-email) below for the values:
+   - `RESEND_API_KEY`, `LEAD_NOTIFY_TO`, `LEAD_NOTIFY_FROM`. Redeploy after adding them.
+4. **Smoke test** the `.pages.dev` URL: home, `/alchemy`, `/start` (complete an intake — you should
+   get the lead email), `/portal`, a `/report?service=sample&type=sysmap`. Clean URLs come from `site/_redirects`.
+5. **Custom domain**: Pages → Custom domains → add `arboleda.co` and `www.arboleda.co`.
    - In your DNS (you control it): add the CNAME/records Cloudflare shows. If your DNS is already on Cloudflare it's one click.
    - Set `www` → redirect to apex (or vice-versa); force HTTPS (Pages does this automatically).
-5. **Search Console**: add the domain, submit `https://arboleda.co/sitemap.xml`.
-6. **Analytics**: Cloudflare → Web Analytics → enable for the domain (no code, no cookie banner).
+6. **Search Console**: add the domain, submit `https://arboleda.co/sitemap.xml`.
+7. **Analytics**: Cloudflare → Web Analytics → enable for the domain (no code, no cookie banner).
 
 At this point the site and the **prototype** portal are live. State is per-browser; payments simulate. Good enough to run sales conversations.
+
+### Resend — lead-capture email
+
+The intake form (`/start`) POSTs to `/api/intake` (a Pages Function), which emails you each new
+lead via [Resend](https://resend.com). Until this is set up, intake submits still succeed silently
+(the function returns `delivered: false`) — you just won't be notified.
+
+1. Sign up at **resend.com**.
+2. **Domains → Add domain → `arboleda.co`** → add the SPF/DKIM (and bounce MX) DNS records it shows
+   you, then Verify. `LEAD_NOTIFY_FROM` must be an address on this verified domain or sends are rejected.
+3. **API Keys → Create** → copy the `re_...` key.
+4. Set the three Cloudflare env vars from Stage 1 step 3:
+   - `RESEND_API_KEY` = the `re_...` key
+   - `LEAD_NOTIFY_TO` = where leads land, e.g. `you@arboleda.co`
+   - `LEAD_NOTIFY_FROM` = a verified sender, e.g. `arboleda leads <leads@arboleda.co>`
+
+Free tier is ~3k emails/month. To test before the domain verifies, temporarily use Resend's shared
+sender: `LEAD_NOTIFY_FROM = onboarding@resend.dev` and `LEAD_NOTIFY_TO` = your own inbox.
 
 ---
 
