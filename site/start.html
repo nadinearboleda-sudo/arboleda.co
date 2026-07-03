@@ -9,10 +9,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=20260613">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='3' y='10' width='4' height='11' rx='2' fill='%230C4A33'/><rect x='10' y='3' width='4' height='18' rx='2' fill='%230C4A33'/><rect x='17' y='7' width='4' height='14' rx='2' fill='%230C4A33'/></svg>">
 <meta name="theme-color" content="#0C4A33">
-<script src="site.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js?v=20260613b"></script>
+<script src="store.js?v=20260613b"></script>
+<script src="site.js?v=20260613" defer></script>
 </head>
 <body>
 
@@ -20,12 +23,12 @@
 
 <header class="site-header">
   <div class="container">
-    <a class="wordmark" href="index.html" aria-label="arboleda.co home">
+    <a class="wordmark" href="/" aria-label="arboleda.co home">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="10" width="4" height="11" rx="2" fill="#0C4A33"></rect><rect x="10" y="3" width="4" height="18" rx="2" fill="#0C4A33"></rect><rect x="17" y="7" width="4" height="14" rx="2" fill="#0C4A33"></rect></svg>
       arboleda<span class="tld">.co</span>
     </a>
     <div class="nav-actions">
-      <a class="btn btn-gray" href="index.html">← Back to site</a>
+      <a class="btn btn-gray" href="/">← Back to site</a>
     </div>
   </div>
 </header>
@@ -34,12 +37,12 @@
   <div class="auth-card" style="max-width:520px">
 
     <div class="progress-steps" id="progress" aria-hidden="true">
-      <span class="on"></span><span></span><span></span>
+      <span class="on"></span><span></span><span></span><span></span>
     </div>
 
     <!-- Step 1: account -->
     <section class="portal-step" id="step-1">
-      <p class="step-label">Step 1 of 3</p>
+      <p class="step-label">Step 1 of 4</p>
       <h1 id="intake-h1">Start with the Ops Audit.</h1>
       <p class="sub" id="intake-sub">Three short steps. We&rsquo;ll scope your audit within 48 hours — fixed price, 2–3 weeks, no obligation beyond it.</p>
       <div class="field">
@@ -58,15 +61,15 @@
         <p class="error">Password needs at least 8 characters.</p>
       </div>
       <div class="form-actions">
-        <span class="hint" style="font-size:13px;color:var(--muted)">Already have an account? <a href="login.html" style="color:var(--accent-deep);font-weight:600">Log in</a></span>
+        <span class="hint" style="font-size:13px;color:var(--muted)">Already have an account? <a href="/login" style="color:var(--accent-deep);font-weight:600">Log in</a></span>
         <button class="btn btn-primary" type="button" data-next="2">Continue <span class="arrow" aria-hidden="true">→</span></button>
       </div>
     </section>
 
     <!-- Step 2: company -->
     <section class="portal-step" id="step-2" hidden>
-      <p class="step-label">Step 2 of 3</p>
-      <h1>About your company.</h1>
+      <p class="step-label">Step 2 of 4</p>
+      <h2>About your company.</h2>
       <p class="sub">Just enough to scope the audit — nothing you&rsquo;ll need to dig for.</p>
       <div class="field">
         <label for="company">Company name</label>
@@ -74,28 +77,44 @@
         <p class="error">Please enter your company name.</p>
       </div>
       <div class="field">
-        <label for="headcount">Headcount</label>
-        <select id="headcount" name="headcount" required>
+        <label for="industry">Industry</label>
+        <select id="industry" name="industry" required>
           <option value="">Select…</option>
-          <option>Under 50</option>
-          <option>50–150</option>
-          <option>150–300</option>
-          <option>300–500</option>
-          <option>500+</option>
-        </select>
-        <p class="error">Select your headcount range.</p>
-      </div>
-      <div class="field">
-        <label for="role">Your role</label>
-        <select id="role" name="role" required>
-          <option value="">Select…</option>
-          <option>Founder / CEO</option>
-          <option>CFO / Finance lead</option>
-          <option>COO / Ops lead</option>
-          <option>Chief of Staff</option>
+          <option>SaaS / software</option>
+          <option>Tech services / MSP</option>
+          <option>Professional services</option>
+          <option>Healthcare</option>
+          <option>Construction</option>
+          <option>Retail &amp; ecommerce</option>
           <option>Other</option>
         </select>
-        <p class="error">Select your role.</p>
+        <p class="error">Select your industry.</p>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="headcount">Headcount</label>
+          <select id="headcount" name="headcount" required>
+            <option value="">Select…</option>
+            <option>Under 50</option>
+            <option>50–150</option>
+            <option>150–300</option>
+            <option>300–500</option>
+            <option>500+</option>
+          </select>
+          <p class="error">Select your headcount range.</p>
+        </div>
+        <div class="field">
+          <label for="role">Your role</label>
+          <select id="role" name="role" required>
+            <option value="">Select…</option>
+            <option>Founder / CEO</option>
+            <option>CFO / Finance lead</option>
+            <option>COO / Ops lead</option>
+            <option>Chief of Staff</option>
+            <option>Other</option>
+          </select>
+          <p class="error">Select your role.</p>
+        </div>
       </div>
       <div class="form-actions">
         <button class="btn btn-line" type="button" data-back="1">← Back</button>
@@ -103,40 +122,91 @@
       </div>
     </section>
 
-    <!-- Step 3: systems -->
+    <!-- Step 3: priorities -->
     <section class="portal-step" id="step-3" hidden>
-      <p class="step-label">Step 3 of 3</p>
-      <h1>Your systems.</h1>
+      <p class="step-label">Step 3 of 4</p>
+      <h2>Your priorities.</h2>
+      <p class="sub">Based on your role and industry we&rsquo;ve marked likely fits — override anything.</p>
+      <div class="field">
+        <label for="goal">Top goal for the next 12 months</label>
+        <select id="goal" name="goal" required>
+          <option value="">Select…</option>
+          <option value="Faster month-end close">Faster month-end close</option>
+          <option value="Raise capital / investor-ready numbers">Raise capital / investor-ready numbers</option>
+          <option value="Margin visibility">Margin visibility</option>
+          <option value="Scale without adding headcount">Scale without adding headcount</option>
+          <option value="Systems consolidation">Systems consolidation</option>
+        </select>
+        <p class="error">Select your top goal.</p>
+      </div>
+      <div class="field">
+        <label>KPIs that matter most <span class="kpi-hint" id="kpi-hint">(pick up to three)</span></label>
+        <div class="checks" id="kpis">
+          <label><input type="checkbox" value="ARR & churn">ARR &amp; churn</label>
+          <label><input type="checkbox" value="Cash & runway">Cash &amp; runway</label>
+          <label><input type="checkbox" value="Project margin">Project margin</label>
+          <label><input type="checkbox" value="Utilisation">Utilisation</label>
+          <label><input type="checkbox" value="Close duration">Close duration</label>
+          <label><input type="checkbox" value="CAC & pipeline">CAC &amp; pipeline</label>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-line" type="button" data-back="2">← Back</button>
+        <button class="btn btn-primary" type="button" data-next="4">Continue <span class="arrow" aria-hidden="true">→</span></button>
+      </div>
+    </section>
+
+    <!-- Step 4: systems -->
+    <section class="portal-step" id="step-4" hidden>
+      <p class="step-label">Step 4 of 4</p>
+      <h2>Your systems.</h2>
       <p class="sub">Tick what you run today — it tells us where the automation potential lives.</p>
       <div class="field">
         <label>Systems in your stack</label>
-        <div class="checks" id="systems">
+        <div class="checks checks-grouped" id="systems">
+          <p class="checks-group-label">Accounting &amp; ERP</p>
           <label><input type="checkbox" value="Xero">Xero</label>
-          <label><input type="checkbox" value="HubSpot">HubSpot</label>
-          <label><input type="checkbox" value="Employment Hero">Employment Hero</label>
-          <label><input type="checkbox" value="PSA">A PSA tool</label>
+          <label><input type="checkbox" value="MYOB">MYOB</label>
+          <label><input type="checkbox" value="NetSuite">NetSuite</label>
           <label><input type="checkbox" value="Other ERP">Other ERP</label>
+          <p class="checks-group-label">CRM &amp; billing</p>
+          <label><input type="checkbox" value="HubSpot">HubSpot</label>
+          <label><input type="checkbox" value="Salesforce">Salesforce</label>
+          <label><input type="checkbox" value="Stripe">Stripe</label>
+          <p class="checks-group-label">People</p>
+          <label><input type="checkbox" value="Employment Hero">Employment Hero</label>
+          <label><input type="checkbox" value="Deputy / Tanda">Deputy / Tanda</label>
+          <p class="checks-group-label">Delivery &amp; PSA</p>
+          <label><input type="checkbox" value="Productive">Productive</label>
+          <label><input type="checkbox" value="Kantata">Kantata</label>
+          <label><input type="checkbox" value="HaloPSA / ConnectWise">HaloPSA / ConnectWise</label>
+          <p class="checks-group-label">Planning &amp; everything else</p>
+          <label><input type="checkbox" value="Planning / FP&amp;A">Planning / FP&amp;A (Cube, Pigment, Causal…)</label>
           <label><input type="checkbox" value="Spreadsheets">Mostly spreadsheets</label>
         </div>
+      </div>
+      <div class="field">
+        <label for="other-systems">Anything else we should know about? <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+        <input type="text" id="other-systems" name="other-systems" placeholder="e.g. Business Central, Shopify, Jira…">
       </div>
       <div class="field">
         <label for="pain">What&rsquo;s eating the most time right now? <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
         <textarea id="pain" name="pain" rows="3" placeholder="e.g. month-end close takes 8 days; weekly reporting is manual…"></textarea>
       </div>
       <div class="form-actions">
-        <button class="btn btn-line" type="button" data-back="2">← Back</button>
+        <button class="btn btn-line" type="button" data-back="3">← Back</button>
         <button class="btn btn-primary" type="button" id="submit-intake">Submit intake <span class="arrow" aria-hidden="true">→</span></button>
       </div>
     </section>
 
-    <!-- Step 4: done -->
-    <section class="portal-step" id="step-4" hidden>
+    <!-- Step 5: done -->
+    <section class="portal-step" id="step-5" hidden>
       <div class="success-icon" aria-hidden="true">✓</div>
-      <h1>You&rsquo;re in.</h1>
+      <h2>You&rsquo;re in.</h2>
       <p class="sub">Thanks — your intake is with us. We&rsquo;ll scope your engagement and send a fixed-price proposal to your email within 48 hours. Meanwhile, your portal already shows what&rsquo;s possible with the systems you run — and what each step unlocks.</p>
       <div class="form-actions" style="justify-content:flex-start">
-        <a class="btn btn-primary" href="portal.html">Go to your portal <span class="arrow" aria-hidden="true">→</span></a>
-        <a class="btn btn-line" href="index.html">Back to arboleda.co</a>
+        <a class="btn btn-primary" href="/portal">Go to your portal <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn-line" href="/">Back to arboleda.co</a>
       </div>
     </section>
 
@@ -144,16 +214,16 @@
 </main>
 
 <script>
-(function () {
+(window.ArboledaStore ? ArboledaStore.hydrate() : Promise.resolve()).then(function () {
   var KEY = 'arboleda-intake-step';
   var DATA_KEY = 'arboleda-intake';
-  var steps = [1, 2, 3, 4];
+  var steps = [1, 2, 3, 4, 5];
 
   // Intent-aware entry (from service-page CTAs)
   var intents = {
-    audit: { h1: 'Start with the Ops Audit.', sub: 'Three short steps. We\u2019ll scope your audit within 48 hours \u2014 fixed price, 2\u20133 weeks, no obligation beyond it.' },
-    readiness: { h1: 'Start with the AI Readiness Assessment.', sub: 'Three short steps. We\u2019ll scope your assessment within 48 hours \u2014 fixed price, 2 weeks, no obligation beyond it.' },
-    systems: { h1: 'Start with a systems review.', sub: 'Three short steps. We\u2019ll scope your review within 48 hours \u2014 fixed price, fixed timeline, no obligation beyond it.' }
+    audit: { h1: 'Start with the Ops Audit.', sub: 'Four quick steps. We\u2019ll scope your audit within 48 hours \u2014 fixed price, 2\u20133 weeks, no obligation beyond it.' },
+    readiness: { h1: 'Start with the AI Readiness Assessment.', sub: 'Four quick steps. We\u2019ll scope your assessment within 48 hours \u2014 fixed price, 2 weeks, no obligation beyond it.' },
+    systems: { h1: 'Start with a systems review.', sub: 'Four quick steps. We\u2019ll scope your review within 48 hours \u2014 fixed price, fixed timeline, no obligation beyond it.' }
   };
   var intent = new URLSearchParams(window.location.search).get('intent');
   if (!intents[intent]) intent = 'audit';
@@ -163,6 +233,8 @@
   function saveData() {
     var systems = [];
     document.querySelectorAll('#systems input:checked').forEach(function (c) { systems.push(c.value); });
+    var kpis = [];
+    document.querySelectorAll('#kpis input:checked').forEach(function (c) { kpis.push(c.value); });
     var data = {
       intent: intent,
       name: (document.getElementById('name').value || '').trim(),
@@ -170,20 +242,32 @@
       company: (document.getElementById('company').value || '').trim(),
       headcount: document.getElementById('headcount').value,
       role: document.getElementById('role').value,
+      industry: document.getElementById('industry').value,
+      goal: document.getElementById('goal').value,
+      kpis: kpis,
       systems: systems,
+      otherSystems: (document.getElementById('other-systems').value || '').trim(),
       pain: (document.getElementById('pain').value || '').trim()
     };
     try { localStorage.setItem(DATA_KEY, JSON.stringify(data)); } catch (e) {}
   }
 
+  var navigated = false;
   function show(n) {
     steps.forEach(function (s) {
       document.getElementById('step-' + s).hidden = (s !== n);
     });
     var dots = document.querySelectorAll('#progress span');
-    dots.forEach(function (d, i) { d.className = (i < Math.min(n, 3)) ? 'on' : ''; });
-    document.getElementById('progress').style.display = (n === 4) ? 'none' : 'flex';
+    dots.forEach(function (d, i) { d.className = (i < Math.min(n, 4)) ? 'on' : ''; });
+    document.getElementById('progress').style.display = (n === 5) ? 'none' : 'flex';
     try { localStorage.setItem(KEY, String(n)); } catch (e) {}
+    // Move focus to the step heading so keyboard/AT users follow the change
+    if (navigated) {
+      var head = document.querySelector('#step-' + n + ' h1, #step-' + n + ' h2');
+      if (head) { head.setAttribute('tabindex', '-1'); head.focus({ preventScroll: false }); }
+      window.scrollTo({ top: 0 });
+    }
+    navigated = true;
   }
 
   function validateStep(n) {
@@ -211,11 +295,135 @@
   document.querySelectorAll('[data-back]').forEach(function (btn) {
     btn.addEventListener('click', function () { show(parseInt(btn.getAttribute('data-back'), 10)); });
   });
-  document.getElementById('submit-intake').addEventListener('click', function () { saveData(); show(4); });
+  document.getElementById('submit-intake').addEventListener('click', function () {
+    saveData();
+    try { localStorage.setItem('arboleda-account', (document.getElementById('email').value || '').trim()); } catch (e) {}
+    // Best-effort lead capture: notify the team. Never blocks the success screen —
+    // if the function is absent (local mode) or the request fails, we ignore it.
+    try {
+      var lead = JSON.parse(localStorage.getItem(DATA_KEY) || '{}');
+      fetch('/api/intake', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(lead),
+        keepalive: true
+      }).catch(function () {});
+    } catch (e) {}
+    show(5);
+  });
+
+  // KPI picker: cap at three, with a live counter
+  var kpiBoxes = document.querySelectorAll('#kpis input');
+  function capKpis() {
+    var n = document.querySelectorAll('#kpis input:checked').length;
+    kpiBoxes.forEach(function (b) { if (!b.checked) b.disabled = n >= 3; });
+    var hint = document.getElementById('kpi-hint');
+    if (hint) {
+      hint.textContent = n === 0 ? '(pick up to three)' :
+        n >= 3 ? '(3 of 3 — untick one to swap)' : '(' + n + ' of 3 picked)';
+    }
+  }
+  kpiBoxes.forEach(function (b) { b.addEventListener('change', capKpis); });
+
+  // Adaptive suggestions: role × industry reorders KPIs and goals,
+  // marking the best fits as "Suggested".
+  var ROLE_KPI = {
+    'Founder / CEO': { 'ARR & churn': 2, 'CAC & pipeline': 2, 'Cash & runway': 1 },
+    'CFO / Finance lead': { 'Close duration': 2, 'Cash & runway': 2, 'Project margin': 1 },
+    'COO / Ops lead': { 'Utilisation': 2, 'Project margin': 2, 'Close duration': 1 },
+    'Chief of Staff': { 'Cash & runway': 1, 'Close duration': 1, 'Utilisation': 1 }
+  };
+  var IND_KPI = {
+    'SaaS / software': { 'ARR & churn': 2, 'CAC & pipeline': 1, 'Cash & runway': 1 },
+    'Tech services / MSP': { 'Project margin': 2, 'Utilisation': 1, 'ARR & churn': 1 },
+    'Professional services': { 'Utilisation': 2, 'Project margin': 2 },
+    'Healthcare': { 'Utilisation': 1, 'Cash & runway': 1, 'Close duration': 1 },
+    'Construction': { 'Project margin': 2, 'Cash & runway': 1 },
+    'Retail & ecommerce': { 'Cash & runway': 1, 'CAC & pipeline': 1, 'Close duration': 1 }
+  };
+  var GOAL_KPI = {
+    'Faster month-end close': { 'Close duration': 3, 'Cash & runway': 1 },
+    'Raise capital / investor-ready numbers': { 'ARR & churn': 3, 'CAC & pipeline': 2, 'Cash & runway': 2 },
+    'Margin visibility': { 'Project margin': 3, 'Utilisation': 2 },
+    'Scale without adding headcount': { 'Utilisation': 2, 'Close duration': 1, 'Project margin': 1 },
+    'Systems consolidation': { 'Close duration': 1, 'Cash & runway': 1 }
+  };
+  var ROLE_GOAL = {
+    'Founder / CEO': { 'Raise capital / investor-ready numbers': 2, 'Scale without adding headcount': 1 },
+    'CFO / Finance lead': { 'Faster month-end close': 2, 'Raise capital / investor-ready numbers': 1 },
+    'COO / Ops lead': { 'Margin visibility': 2, 'Scale without adding headcount': 1 },
+    'Chief of Staff': { 'Systems consolidation': 1, 'Scale without adding headcount': 1 }
+  };
+  var IND_GOAL = {
+    'SaaS / software': { 'Raise capital / investor-ready numbers': 2 },
+    'Tech services / MSP': { 'Margin visibility': 2 },
+    'Professional services': { 'Margin visibility': 2 },
+    'Healthcare': { 'Scale without adding headcount': 1, 'Systems consolidation': 1 },
+    'Construction': { 'Margin visibility': 1, 'Faster month-end close': 1 },
+    'Retail & ecommerce': { 'Scale without adding headcount': 1 }
+  };
+  function applySuggestions(skipGoalReorder) {
+    var role = document.getElementById('role').value;
+    var ind = document.getElementById('industry').value;
+    var goal = document.getElementById('goal').value;
+    var rk = ROLE_KPI[role] || {}, ik = IND_KPI[ind] || {}, gk = GOAL_KPI[goal] || {};
+    // KPIs: score (goal weighs heaviest), reorder, chip top 3 (score > 0)
+    var wrap = document.getElementById('kpis');
+    var labels = Array.prototype.slice.call(wrap.querySelectorAll('label'));
+    labels.forEach(function (l, i) {
+      var v = l.querySelector('input').value;
+      l._score = (rk[v] || 0) + (ik[v] || 0) + (gk[v] || 0);
+      l._orig = i;
+      var chip = l.querySelector('.sug-chip');
+      if (chip) chip.remove();
+    });
+    labels.sort(function (a, b) { return (b._score - a._score) || (a._orig - b._orig); });
+    labels.forEach(function (l, i) {
+      if (l._score > 0 && i < 3) {
+        var c = document.createElement('span');
+        c.className = 'sug-chip'; c.textContent = 'Suggested';
+        l.appendChild(c);
+      }
+      wrap.appendChild(l);
+    });
+    // Goals: reorder options, mark best fits (skipped when the goal itself
+    // just changed — reordering a select mid-interaction is disorienting)
+    if (skipGoalReorder) return;
+    var rg = ROLE_GOAL[role] || {}, ig = IND_GOAL[ind] || {};
+    var sel = document.getElementById('goal');
+    var current = sel.value;
+    var opts = Array.prototype.slice.call(sel.querySelectorAll('option')).filter(function (o) { return o.value; });
+    opts.forEach(function (o, i) {
+      o._score = (rg[o.value] || 0) + (ig[o.value] || 0);
+      o._orig = i;
+      o.textContent = o.value + (o._score >= 2 ? ' — suggested for you' : '');
+    });
+    opts.sort(function (a, b) { return (b._score - a._score) || (a._orig - b._orig); });
+    opts.forEach(function (o) { sel.appendChild(o); });
+    sel.value = current;
+  }
+  document.getElementById('role').addEventListener('change', function () { applySuggestions(false); });
+  document.getElementById('industry').addEventListener('change', function () { applySuggestions(false); });
+  document.getElementById('goal').addEventListener('change', function () { applySuggestions(true); });
+
+  // Existing account holders (e.g. arriving via "Edit intake") skip the
+  // account step entirely — no password re-entry.
+  var account = null;
+  try { account = localStorage.getItem('arboleda-account'); } catch (e) {}
 
   var saved = 1;
   try { saved = parseInt(localStorage.getItem(KEY) || '1', 10) || 1; } catch (e) {}
-  if (saved === 4) saved = 1; // completed flows restart fresh
+  if (saved >= 5 || saved < 1 || isNaN(saved)) saved = account ? 2 : 1; // completed flows restart at the editable part
+
+  if (account) {
+    var pw = document.getElementById('password');
+    pw.removeAttribute('required');
+    var pwField = pw.closest('.field');
+    if (pwField) pwField.hidden = true;
+    if (saved < 2) saved = 2;
+    var s2sub = document.querySelector('#step-2 .sub');
+    if (s2sub) s2sub.innerHTML = 'Editing your intake as <b>' + account.replace(/[<>&"]/g, '') + '</b> — changes update your portal instantly.';
+  }
 
   // Restore previously entered values so a refresh never loses work
   try {
@@ -224,16 +432,23 @@
       ['name', 'email', 'company'].forEach(function (id) { if (prev[id]) document.getElementById(id).value = prev[id]; });
       if (prev.headcount) document.getElementById('headcount').value = prev.headcount;
       if (prev.role) document.getElementById('role').value = prev.role;
+      if (prev.industry) document.getElementById('industry').value = prev.industry;
+      if (prev.goal) document.getElementById('goal').value = prev.goal;
       if (prev.pain) document.getElementById('pain').value = prev.pain;
-      (prev.systems || []).forEach(function (s) {
-        var box = document.querySelector('#systems input[value="' + s + '"]');
-        if (box) box.checked = true;
+      if (prev.otherSystems) document.getElementById('other-systems').value = prev.otherSystems;
+      document.querySelectorAll('#systems input').forEach(function (box) {
+        if ((prev.systems || []).indexOf(box.value) !== -1) box.checked = true;
+      });
+      document.querySelectorAll('#kpis input').forEach(function (box) {
+        if ((prev.kpis || []).indexOf(box.value) !== -1) box.checked = true;
       });
     }
   } catch (e) {}
 
+  capKpis();
+  applySuggestions();
   show(saved);
-})();
+});
 </script>
 
 </body>

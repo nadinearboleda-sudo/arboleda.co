@@ -1,0 +1,13 @@
+# Cloudflare Pages clean URLs — /alchemy serves alchemy.html, etc.
+# API functions are handled by /functions and must NOT be rewritten.
+/index.html        /            301
+/api/*             /api/:splat  200
+/alchemy           /alchemy.html      200
+/aurora            /aurora.html       200
+/anatomy           /anatomy.html      200
+/how-we-work       /how-we-work.html  200
+/start             /start.html        200
+/login             /login.html        200
+/portal            /portal.html       200
+/report            /report.html       200
+/pay               /pay.html          200

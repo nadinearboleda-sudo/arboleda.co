@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 0 report | arboleda.co</title>
+<meta name="description" content="Your arboleda.co Step 0 report preview.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=20260613">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='3' y='10' width='4' height='11' rx='2' fill='%230C4A33'/><rect x='10' y='3' width='4' height='18' rx='2' fill='%230C4A33'/><rect x='17' y='7' width='4' height='14' rx='2' fill='%230C4A33'/></svg>">
+<meta name="theme-color" content="#0C4A33">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js?v=20260613b"></script>
+<script src="store.js?v=20260613b"></script>
+<script src="report-content.js?v=20260613"></script>
+<script src="report-render.js?v=20260613"></script>
+</head>
+<body class="report-page">
+
+<header class="rep-toolbar" role="banner">
+  <a class="wordmark" href="/portal" aria-label="Back to portal">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="10" width="4" height="11" rx="2" fill="#0C4A33"></rect><rect x="10" y="3" width="4" height="18" rx="2" fill="#0C4A33"></rect><rect x="17" y="7" width="4" height="14" rx="2" fill="#0C4A33"></rect></svg>
+    arboleda<span class="tld">.co</span>
+  </a>
+  <div class="rep-toolbar-actions">
+    <a class="btn btn-line" href="/portal">← Back to portal</a>
+    <button class="btn btn-primary" type="button" id="print-btn">Download PDF <span class="arrow" aria-hidden="true">→</span></button>
+  </div>
+</header>
+
+<main id="main" class="rep-sheet">
+  <div id="report-body">
+    <p class="rep-intro">Loading your report…</p>
+  </div>
+  <footer class="rep-foot">
+    <p>Built from your stack selection — not yet your data. The Ops Audit connects both. · arboleda.co · hello@arboleda.co</p>
+  </footer>
+</main>
+
+<script>
+(window.ArboledaStore ? ArboledaStore.hydrate() : Promise.resolve()).then(function () {
+  var data = null;
+  try { data = JSON.parse(localStorage.getItem('arboleda-intake') || 'null'); } catch (e) {}
+  var params = new URLSearchParams(window.location.search);
+  var service = params.get('service');
+  if (['anatomy', 'aurora', 'alchemy', 'brief', 'sample'].indexOf(service) === -1) service = 'alchemy';
+  var el = document.getElementById('report-body');
+
+  if (!data || !(data.systems || []).length) {
+    el.innerHTML = '<header class="rep-head"><h1>No intake found.</h1>' +
+      '<p class="rep-sub">Complete your intake first — your Step 0 reports are built from it.</p></header>' +
+      '<p><a class="btn btn-primary" href="/start">Complete your intake <span class="arrow" aria-hidden="true">→</span></a></p>';
+    document.getElementById('print-btn').style.display = 'none';
+    return;
+  }
+
+  var report;
+  try {
+  if (service === 'brief' || service === 'sample') {
+    var disc = {};
+    try { disc = JSON.parse(localStorage.getItem('arboleda-discovery') || '{}'); } catch (e) {}
+    if (service === 'sample') {
+      var type = params.get('type');
+      if (['sysmap', 'target', 'readout'].indexOf(type) === -1) type = 'sysmap';
+      report = ArboledaReports.buildSample(type, data, disc);
+      document.querySelector('.rep-sheet').classList.add('sample');
+    } else {
+      report = ArboledaReports.buildBrief(data, disc);
+    }
+  } else {
+    report = ArboledaReports.build(service, data);
+  }
+  el.innerHTML = ArboledaReportRender.full(report, data);
+  document.title = report.title + ' | arboleda.co';
+  } catch (err) {
+    el.innerHTML = '<header class="rep-head"><h1>Couldn&rsquo;t build the report.</h1>' +
+      '<p class="rep-sub">Usually a stale cached script — hard-refresh (Cmd+Shift+R) and try again.</p></header>' +
+      '<p class="rep-entities">' + String(err).replace(/[<>&]/g, '') + '</p>';
+  }
+
+  document.getElementById('print-btn').addEventListener('click', function () { window.print(); });
+});
+</script>
+
+</body>
+</html>

@@ -9,10 +9,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=20260613">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='3' y='10' width='4' height='11' rx='2' fill='%230C4A33'/><rect x='10' y='3' width='4' height='18' rx='2' fill='%230C4A33'/><rect x='17' y='7' width='4' height='14' rx='2' fill='%230C4A33'/></svg>">
 <meta name="theme-color" content="#0C4A33">
-<script src="site.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js?v=20260613b"></script>
+<script src="store.js?v=20260613b"></script>
+<script src="site.js?v=20260613" defer></script>
 </head>
 <body>
 
@@ -20,12 +23,12 @@
 
 <header class="site-header">
   <div class="container">
-    <a class="wordmark" href="index.html" aria-label="arboleda.co home">
+    <a class="wordmark" href="/" aria-label="arboleda.co home">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="10" width="4" height="11" rx="2" fill="#0C4A33"></rect><rect x="10" y="3" width="4" height="18" rx="2" fill="#0C4A33"></rect><rect x="17" y="7" width="4" height="14" rx="2" fill="#0C4A33"></rect></svg>
       arboleda<span class="tld">.co</span>
     </a>
     <div class="nav-actions">
-      <a class="btn btn-gray" href="index.html">← Back to site</a>
+      <a class="btn btn-gray" href="/">← Back to site</a>
     </div>
   </div>
 </header>
@@ -40,33 +43,60 @@
         <input type="email" id="email" name="email" autocomplete="email" required placeholder="you@company.com.au">
         <p class="error">Enter a valid work email address.</p>
       </div>
-      <div class="field">
+      <div class="field" id="pw-field">
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" autocomplete="current-password" required placeholder="••••••••">
+        <input type="password" id="password" name="password" autocomplete="current-password" placeholder="••••••••">
         <p class="error">Enter your password.</p>
         <span class="hint"><a href="#" style="color:var(--accent-deep);font-weight:600">Forgot password?</a></span>
       </div>
       <div class="form-actions">
-        <button class="btn btn-primary btn-lg" type="submit" style="width:100%">Log in <span class="arrow" aria-hidden="true">→</span></button>
+        <button class="btn btn-primary btn-lg" type="submit" style="width:100%" id="login-btn">Log in <span class="arrow" aria-hidden="true">→</span></button>
       </div>
+      <p class="form-foot" id="login-msg" hidden></p>
     </form>
-    <p class="form-foot">New here? <a href="start.html">Start with the Ops Audit</a></p>
+    <p class="form-foot">New here? <a href="/start">Start with the Ops Audit</a></p>
   </div>
 </main>
 
 <script>
+(window.ArboledaStore ? ArboledaStore.hydrate() : Promise.resolve()).then(function () {
+  var cloud = window.ArboledaStore && ArboledaStore.mode === 'cloud';
+  // Cloud mode uses passwordless magic links — hide the password field.
+  if (cloud) {
+    var pf = document.getElementById('pw-field');
+    if (pf) pf.hidden = true;
+    var btn = document.getElementById('login-btn');
+    btn.innerHTML = 'Email me a login link <span class="arrow" aria-hidden="true">→</span>';
+    document.querySelector('.auth-card .sub').textContent = 'Enter your work email and we’ll send a one-time login link — no password to remember.';
+  }
+  // Already signed in? Go straight to the portal.
+  if (window.ArboledaStore && ArboledaStore.isLoggedIn()) { window.location.href = '/portal'; return; }
+
   document.getElementById('login-form').addEventListener('submit', function (e) {
     e.preventDefault();
-    var ok = true;
-    ['email', 'password'].forEach(function (id) {
-      var f = document.getElementById(id);
-      var bad = !f.value || (f.type === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.value));
-      f.closest('.field').classList.toggle('invalid', bad);
-      f.setAttribute('aria-invalid', bad ? 'true' : 'false');
-      if (bad) ok = false;
-    });
-    if (ok) window.location.href = 'portal.html';
+    var emailEl = document.getElementById('email');
+    var bad = !emailEl.value || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emailEl.value);
+    emailEl.closest('.field').classList.toggle('invalid', bad);
+    if (bad) { emailEl.setAttribute('aria-invalid', 'true'); return; }
+    var email = emailEl.value.trim();
+    var msg = document.getElementById('login-msg');
+
+    if (cloud) {
+      document.getElementById('login-btn').disabled = true;
+      ArboledaStore.signInWithEmail(email).then(function (res) {
+        msg.hidden = false;
+        msg.innerHTML = (res && res.error)
+          ? 'Couldn’t send the link: ' + String(res.error.message || res.error)
+          : 'Check your inbox — we’ve emailed a login link to <b>' + email.replace(/[<>&]/g, '') + '</b>.';
+        document.getElementById('login-btn').disabled = false;
+      });
+    } else {
+      // Local/prototype mode: no real auth, just remember the email and continue.
+      try { localStorage.setItem('arboleda-account', email); } catch (err) {}
+      window.location.href = '/portal';
+    }
   });
+});
 </script>
 
 </body>

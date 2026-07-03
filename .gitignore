@@ -1,4 +1,12 @@
 .DS_Store
+.claude/
+
+# Working materials & private models — kept out of version control
 arboleda.co/
 arboleda.co.zip
-.claude/
+
+# Server secrets (only .env.example, the template, is tracked)
+.env
+.env.*
+!.env.example
+**/.env

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout | arboleda.co</title>
+<meta name="description" content="arboleda.co checkout.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=20260613">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='3' y='10' width='4' height='11' rx='2' fill='%230C4A33'/><rect x='10' y='3' width='4' height='18' rx='2' fill='%230C4A33'/><rect x='17' y='7' width='4' height='14' rx='2' fill='%230C4A33'/></svg>">
+<meta name="theme-color" content="#0C4A33">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js?v=20260613b"></script>
+<script src="store.js?v=20260613b"></script>
+<script src="report-content.js?v=20260613"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="wordmark" href="/portal" aria-label="Back to portal">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="10" width="4" height="11" rx="2" fill="#0C4A33"></rect><rect x="10" y="3" width="4" height="18" rx="2" fill="#0C4A33"></rect><rect x="17" y="7" width="4" height="14" rx="2" fill="#0C4A33"></rect></svg>
+      arboleda<span class="tld">.co</span>
+    </a>
+    <div class="nav-actions"><a class="btn btn-gray" href="/portal">← Back to portal</a></div>
+  </div>
+</header>
+
+<main id="main" class="auth-main">
+  <div class="auth-card" style="max-width:480px">
+    <p class="step-label">Checkout · prototype</p>
+    <h1 id="pay-title">Payment</h1>
+    <p class="sub" id="pay-context"></p>
+    <p class="sub" id="pay-sub"></p>
+    <div class="pay-unlocks"><p class="pay-unlocks-label">This payment unlocks</p><ul id="pay-unlocks"></ul></div>
+    <div class="pay-lines" id="pay-lines"></div>
+    <div class="pay-summary">
+      <div class="pay-line"><span>Engagement total</span><span id="pay-engtotal"></span></div>
+      <div class="pay-line"><span>Paid to date</span><span id="pay-paid"></span></div>
+      <div class="pay-line"><span>Remaining after this payment</span><span id="pay-remaining"></span></div>
+    </div>
+    <div class="pay-total"><span>Total due now</span><b id="pay-total"></b></div>
+    <div class="form-actions" style="margin-top:24px">
+      <a class="btn btn-line" href="/portal">Cancel</a>
+      <button class="btn btn-primary" type="button" id="pay-btn">Pay <span id="pay-amt"></span> <span class="arrow" aria-hidden="true">→</span></button>
+    </div>
+    <p class="report-note" style="margin-top:16px">Prototype checkout — no card is charged. In production this is a Stripe Checkout session; payment confirmation unlocks your deliverables automatically.</p>
+  </div>
+</main>
+
+<script>
+(window.ArboledaStore ? ArboledaStore.hydrate() : Promise.resolve()).then(function () {
+  var R = window.ArboledaReports;
+  var intake = null;
+  try { intake = JSON.parse(localStorage.getItem('arboleda-intake') || 'null'); } catch (e) {}
+  var eng = {};
+  try { eng = JSON.parse(localStorage.getItem('arboleda-engagement') || '{}'); } catch (e) {}
+  eng.payments = eng.payments || [];
+
+  var audit = eng.price || R.auditPrice(intake);
+  var step2 = R.step2Price(intake);
+  var credit = Math.min(audit, step2);
+
+  var net = step2 - credit;
+  var m1amt = Math.round(net * 0.4), m2amt = Math.round(net * 0.4), m3amt = net - m1amt - m2amt;
+  var dep = Math.round(audit / 2), bal = audit - dep;
+  var FOCUS_NAME = { alchemy: 'Alchemy — automation', aurora: 'Aurora — decision intelligence', anatomy: 'Anatomy — systems foundations' };
+
+  var STAGES = {
+    'audit-deposit': {
+      title: 'Audit deposit', contract: 'audit',
+      sub: 'Kicks off your fixed-scope, fixed-price audit. Fully refundable until kickoff; the whole fee credits against Step 2 if you proceed within 90 days.',
+      unlocks: ['Audit kickoff — 2–3 weeks, fixed scope', 'Working documents in your portal as they’re produced', 'The engagement timeline and deliverables view'],
+      lines: [['Audit fee — fixed price, scoped from your brief', audit], ['Due now: 50% deposit to kick off', dep]],
+      amount: dep, next: 'step1_paid' },
+    'audit-balance': {
+      title: 'Audit balance', contract: 'audit',
+      sub: 'Due at the executive readout. Nothing is owed unless the readout happens.',
+      unlocks: ['Final audit deliverables — report, roadmap, readout deck', 'Your Step 2 proposal, scoped from the findings', 'The 90-day audit credit toward Step 2'],
+      lines: [['Audit fee — fixed price', audit], ['Less: deposit already paid', -dep], ['Due now: balance at readout', bal]],
+      amount: bal, next: 'step1_delivered' },
+    'step2': {
+      title: 'Step 2 — milestone 1 of 3', contract: 'step2',
+      sub: 'Signs the fixed-scope build and starts the connection phase. Read-only access first — nothing is written to your systems until you approve it.',
+      unlocks: ['Connection phase: source systems linked via the integration layer', 'Data-quality report on what your data can support', 'Milestone 1 deliverables in your portal'],
+      lines: [['Step 2 build — fixed scope from the audit roadmap', step2], ['Less: audit fee credited (within 90 days)', -credit], ['Net build price', net], ['Due now: 40% on signing', m1amt]],
+      amount: m1amt, next: 'step2_paid' },
+    'm2': {
+      title: 'Step 2 — milestone 2 of 3', contract: 'step2',
+      sub: 'Due only after we confirm connection sign-off with you — the build phase then starts on your real data.',
+      unlocks: ['Build phase deliverables in staging, on your data', 'Specification documents for everything being built'],
+      lines: [['Net build price', net], ['Less: milestone 1 paid', -m1amt], ['Due now: 40% at connection sign-off', m2amt]],
+      amount: m2amt, next: 'm2' },
+    'm3': {
+      title: 'Step 2 — milestone 3 of 3', contract: 'step2',
+      sub: 'Due only after we confirm handover readiness — production cutover follows immediately.',
+      unlocks: ['Production cutover — live, monitored, with rollback', 'Runbooks, training and full handover', 'Care plan option for ongoing ownership'],
+      lines: [['Net build price', net], ['Less: milestones 1–2 paid', -(m1amt + m2amt)], ['Due now: 20% at handover', m3amt]],
+      amount: m3amt, next: 'm3' }
+  };
+
+  var stage = new URLSearchParams(window.location.search).get('stage');
+  var S = STAGES[stage];
+  if (!S) { window.location.href = '/portal'; return; }
+
+  document.getElementById('pay-title').textContent = S.title;
+  document.getElementById('pay-context').textContent = (intake && intake.company ? intake.company + ' · ' : '') +
+    (FOCUS_NAME[eng.focus] || 'arboleda engagement');
+  document.getElementById('pay-sub').textContent = S.sub;
+  document.getElementById('pay-unlocks').innerHTML = S.unlocks.map(function (u) { return '<li>' + u + '</li>'; }).join('');
+  document.getElementById('pay-lines').innerHTML = S.lines.map(function (l) {
+    return '<div class="pay-line"><span>' + l[0] + '</span><span>' + (l[1] < 0 ? '−' : '') + R.money(Math.abs(l[1])) + '</span></div>';
+  }).join('');
+  // contract-level summary: total, paid to date, remaining after this payment
+  var contractTotal = S.contract === 'audit' ? audit : net;
+  var paid = eng.payments.filter(function (p) {
+    var isAudit = p.stage.indexOf('audit') === 0;
+    return S.contract === 'audit' ? isAudit : !isAudit;
+  }).reduce(function (a, p) { return a + (p.amount || 0); }, 0);
+  document.getElementById('pay-engtotal').textContent = R.money(contractTotal) + (S.contract === 'step2' ? ' (after audit credit)' : '');
+  document.getElementById('pay-paid').textContent = R.money(paid);
+  document.getElementById('pay-remaining').textContent = R.money(Math.max(contractTotal - paid - S.amount, 0));
+  document.getElementById('pay-total').textContent = R.money(S.amount);
+  document.getElementById('pay-amt').textContent = R.money(S.amount);
+
+  var cloud = window.ArboledaStore && ArboledaStore.mode === 'cloud' && ArboledaStore.isLoggedIn();
+  if (cloud) {
+    // Real money: hand off to a server-created Stripe Checkout session. State only
+    // advances via the verified webhook — never here.
+    document.querySelector('.report-note').textContent = 'Secure checkout by Stripe. Your deliverables unlock automatically once payment confirms.';
+  }
+  document.getElementById('pay-btn').addEventListener('click', function () {
+    if (cloud) {
+      var btn = document.getElementById('pay-btn');
+      btn.disabled = true;
+      ArboledaStore.api('/api/checkout', { stage: stage }).then(function (res) {
+        if (res.ok && res.data.url) { window.location.href = res.data.url; }
+        else { btn.disabled = false; alert(res.data.error || 'Could not start checkout.'); }
+      });
+      return;
+    }
+    // Prototype mode: simulate the payment and advance local state.
+    eng.state = S.next;
+    if (!eng.focus) {
+      try {
+        var dsc = JSON.parse(localStorage.getItem('arboleda-discovery') || '{}');
+        eng.focus = dsc.focus && dsc.focus !== 'unsure' ? dsc.focus : 'alchemy';
+      } catch (err) { eng.focus = 'alchemy'; }
+    }
+    eng.payments.push({ stage: stage, amount: S.amount, date: new Date().toISOString().slice(0, 10) });
+    try { localStorage.setItem('arboleda-engagement', JSON.stringify(eng)); } catch (e) {}
+    window.location.href = '/portal';
+  });
+});
+</script>
+
+</body>
+</html>
